@@ -1,11 +1,12 @@
 const express = require('express');
 const parser = require('body-parser');
 const path = require('path');
-const db = require('./db/mongo/controller.js');
+// const db = require('./db/mongo/controller.js');
 const sqlDb = require('./db/sql/controller.js');
+//external apis
+const apiKeys = require('./helpers/config.js');
 const yelp = require('./helpers/yelpHelpers.js');
 const eventful = require('./helpers/eventful.js');
-
 
 const app = express();
 
@@ -26,13 +27,15 @@ app.get('/', function(req, res) {
 //SIGNUP-LOGIN
 app.post('/signup', function(req, res) {
   var signUp = req.body;
+  var userObj = {};
+  //!!important check if  username exists
+
   //save to sql database
   // sqlDb.POST(signUp, function(res){
-
   // 	res.send(200)
   // })
 
-	
+
 });
 
 app.post('/login', function(req, res) {
@@ -59,7 +62,7 @@ app.post('/search', function(req, res) {
     });
   }
   
-  if (data.type === 'activity') {
+  if (data.type === 'event') {
     eventful.getEvents(data.location, data.search, function(events) {
       console.log('get events ', events);
       res.send(events);
@@ -94,15 +97,4 @@ app.post('/itinerary', function(req, res) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-app.listen(3000, ()=> console.log('Listening on port 3000'));
+app.listen(3000, () => console.log('Listening on port 3000'));
