@@ -85,13 +85,13 @@ var saveItinerary = function(passI){
 // Attaches them to the iternary data as itdata.events;
 // And returns the whole events obj with that array attached to it.
 
-var getItsEvents = function(id){
-  Itinerary.find({listid : id}, (err, itdata) =>{
+var getItsEvents = function(id, cb){
+  Itinerary.find({listid : id}, (err, itdata) => {
     if(err){
       return console.log (err)
     } else {
       console.log(itdata.eventids)
-      return getEventsArray(itdata.eventids)
+      cb(itdata.eventids)
     }
   })  
 }
@@ -102,7 +102,7 @@ var getEventsArray = function(eventsarr, cb){
   console.log(typeof eventsarr)
   console.log(eventsarr[0])
   for (var i = 0; i < eventsarr.length; i++){
-    Event.find({eventid: eventsarr[i]}, (err, event) =>{
+    Event.find({eventid: eventsarr[i]}, (err, event) => {
       if (err){
         return console.log(err)
       } else {
