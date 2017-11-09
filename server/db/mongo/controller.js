@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
-var db = mongoose.connect('mongodb://localhost/eventlist',{useMongoClinet:true})
+var db = mongoose.connect('mongodb://localhost/eventlist',{useMongoClient:true})
 // Use below for Mlabs address
 // var db = mongoose.connect('mongodb://localhost/',{useMongoClinet:true}) 
 mongoose.Promise = global.Promise
 
-db.once('open'),()=>{
-  console.log('Connected to the DB')
-}
+db.once('open', ()=> {
+  console.log('Connected successfully')
+})
 
 var ItinerarySchema = new mongoose.Schema({
   listname: String,
@@ -86,7 +86,6 @@ var saveItinerary = function(passI){
 // And returns the whole events obj with that array attached to it.
 
 var getItsEvents = function(id){
-  let id = parseInt(id);
   Itinerary.find({listid : id}, (err, itdata) =>{
     if(err){
       return console.log (err)
@@ -97,18 +96,22 @@ var getItsEvents = function(id){
   })  
 }
 
-var getEventsArray = function(eventsarr){
+var getEventsArray = function(eventsarr, cb){
   var totalevents = [];
+  var eventsarr = JSON.parse(eventsarr.query)
+  console.log(typeof eventsarr)
+  console.log(eventsarr[0])
   for (var i = 0; i < eventsarr.length; i++){
     Event.find({eventid: eventsarr[i]}, (err, event) =>{
       if (err){
         return console.log(err)
       } else {
-        totalevents.push(event)
+        totalevents.push(event[0])
+        console.log(event)
       }
     })
   }
-  return totalevents;
+  cb(totalevents);
 }
 
-module.exports = {Itinerary, Event, saveEvent, saveItinerary, getItsEvents}
+module.exports = {Itinerary, Event, saveEvent, saveItinerary, getItsEvents, getEventsArray}
