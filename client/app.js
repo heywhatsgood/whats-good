@@ -1,4 +1,4 @@
-angular.module('whatsGood', ['ngMaterial'])
+angular.module('whatsGood', ['ngMaterial', 'firebase'])
   .config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('altTheme')
       .primaryPalette('blue-grey')
@@ -14,8 +14,9 @@ angular.module('whatsGood', ['ngMaterial'])
   .component('myApp', {
     bindings: {
     },
-    controller: function($mdDialog) {
+    controller: function($mdDialog, $http) {
       const ctrl = this;
+
       this.currentNavItem = 'home';
       this.isValidUser = false;
       this.user = {};
@@ -23,36 +24,82 @@ angular.module('whatsGood', ['ngMaterial'])
 
       //collapse this
       this.openLoginModal = (event, loginType) => {
-        var loginController = function($mdDialog) {
+        var loginController = function($mdDialog, $http, Auth) {
+          const lCtrl = this;
           this.loginType = loginType;
-          this.username = '';
-          this.password = '';
+          this.email = '';
+          this.displayName = '';
+          this.passwordError = '';
+          this.uid = '';
+          this.user = {};
 
-          this.handleLoginButton = function(username, password) {
-            if (this.loginType === 'signup') {
+          lCtrl.createUser = (callback) => {
+            Auth.$createUserWithEmailAndPassword(lCtrl.email, lCtrl.password)
+              .then(function(firebaseUser) {
+                // lCtrl.uid = firebaseUser.uid;
+                // lCtrl.user = firebaseUser;
+                console.log('user created ', lCtrl.uid);
+                callback(true);
+              }).catch(function(error) {
+                console.log('error creating', error);
+                callback(false);
+              });
+          };
+          lCtrl.loginUser = (callback) => {
+            Auth.$signInWithEmailAndPassword(lCtrl.email, lCtrl.password)
+              .then(function(firebaseUser) {
+                lCtrl.uid = firebaseUser.uid;
+                lCtrl.user.accountInfo = firebaseUser;
+                lCtrl.user.displayName = lCtrl.displayName;
+                console.log('user logged in ', lCtrl.user.displayName);
+                callback(lCtrl.user);
+              }).catch(function(error) {
+                callback(false);
+                console.log('login error ', error);
+              });
+          };
+
+          lCtrl.handleLoginButton = (displayName, password) => {
+            if (lCtrl.loginType === 'signup') {
               //create new user and switch back to login
-              this.password = '';
-              this.loginType = 'login';
+              lCtrl.createUser(function(isCreated) {
+                if (isCreated) {
+                  lCtrl.password = '';
+                  lCtrl.loginType = 'login';
+                } else {
+                  //user creation failed
+
+                }
+              });
             } else {
               //log in new user
-              this.answer(username);
+              lCtrl.loginUser(function(signedInUser) {
+                if (signedInUser) {
+                  console.log('passing signin data to mdialog hide', signedInUser);
+                  lCtrl.answer(signedInUser);
+                } else {
+                  //user createion failed
+
+                }
+              });
+
             }
           };
 
-          this.hide = function () {
+          lCtrl.hide = function () {
             console.log('hide');
             $mdDialog.hide();
           };
 
-          this.cancel = function () {
+          lCtrl.cancel = function () {
             console.log('cancel');
 
             $mdDialog.cancel();
           };
 
-          this.answer = function (answer) {
-            console.log('answer', answer);
-            $mdDialog.hide(answer);
+          lCtrl.answer = function (user) {
+            console.log('Succesfully signed in: ', user.displayName);
+            $mdDialog.hide(user);
           };
         };
 
@@ -60,8 +107,8 @@ angular.module('whatsGood', ['ngMaterial'])
           controller: loginController,
           controllerAs: 'login',
           template: `
-            <md-dialog aria-label="User Login">
-              <form ng-cloak>
+            <md-dialog flex="40" flex-gt-md="30" aria-label="User Login">
+              <form name="loginForm" ng-cloak>
                 <md-toolbar>
                   <div class="md-toolbar-tools">
                     <h2 ng-if="login.loginType === 'login'">Please Login</h2>
@@ -73,31 +120,33 @@ angular.module('whatsGood', ['ngMaterial'])
                   </div>
                 </md-toolbar>
 
-                <md-dialog-content layout-padding>
-                  <h3 ng-if="login.loginType === 'login'" content-padding>Please enter your username and password</h3>
-                  <h3 ng-if="login.loginType === 'signup'" content-padding>Sign up with a username and a password</h3>
+                <md-dialog-content>
                   <md-content layout="column" layout-align="center center">
                     <md-input-container>
-                      <label>Username</label>
-                      <input md-autofocus ng-model="login.username">
+                      <label>Email</label>
+                      <input flex="100" md-autofocus type="email" ng-model="login.email" name="email" required>
+                    </md-input-container>
+                    <md-input-container>
+                      <label>Display Name</label>
+                      <input flex="100" ng-model="login.displayName" name="displayName" required>
                     </md-input-container>
                     <md-input-container>
                       <label>Password</label>
-                      <input type="password" ng-model="login.password">
+                      <input flex="100" type="password" ng-model="login.password" name="password" required>
                     </md-input-container>
                     <md-input-container ng-if="login.loginType === 'signup'">
                       <label>Password</label>
-                      <input type="password" ng-model="passwordRepeat">
+                      <input flex="100" type="password" ng-model="login.password2" name="password2" required>
                     </md-input-container>
                   </md-content>
                 </md-dialog-content>
 
                 <md-dialog-actions layout="row">
-                  <md-button ng-click="login.handleLoginButton(login.username, login.password)">
+                  <md-button ng-click="login.handleLoginButton(login.displayName, login.password)">
                     Login
                   </md-button>
                   <span flex></span>
-                  <md-button ng-click="login.loginType='signup'">
+                  <md-button ng-if="login.loginType === 'login'" ng-click="login.loginType='signup'">
                     Sign-Up
                   </md-button>
                   <md-button ng-click="login.cancel()">
@@ -111,9 +160,10 @@ angular.module('whatsGood', ['ngMaterial'])
           parent: angular.element(document.body),
           clickOutsideToClose: true,
         })
-          .then(function (username) {
-            console.log('answered');
-            ctrl.user.username = username;
+          .then(function (user) {
+            console.log('answered', user.displayName);
+            ctrl.user = user;
+            ctrl.displayName = user.displayName;
             ctrl.isValidUser = true;
           }, function () {
             console.log('canceled');
@@ -165,7 +215,7 @@ angular.module('whatsGood', ['ngMaterial'])
           </div>
           <div ng-if="$ctrl.isValidUser">
             <md-button md-no-ink class="md-primary" ng-click="$ctrl.goto('home')" name="userProfile">
-              Hello, {{$ctrl.user.username}}
+              Hello, {{$ctrl.displayName}}
             </md-button>
             <md-button class="md-icon-button" ng-click="$ctrl.goto('home')" aria-label="More">
               <md-icon style="color:#673AB7;font:bold;">&#xE853;</md-icon>
