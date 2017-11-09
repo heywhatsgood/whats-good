@@ -1,10 +1,11 @@
 // 1 => Connect to the DB
 
 var mongoose = require('mongoose')
+mongoose.Promise = global.Promise;
 var db = mongoose.connect('mongodb://localhost/eventlist', { useMongoClient: true })
 // Use below for Mlabs address
 // var db = mongoose.connect('mongodb://localhost/',{useMongoClinet:true}) 
-mongoose.Promise = global.Promise;
+
 
 // 2 => Drop the DB
 

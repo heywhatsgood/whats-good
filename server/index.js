@@ -78,7 +78,12 @@ app.post('/search', function(req, res) {
 // app.get('/userlist', function(req, res){
 // 	// get from mongodb
 
-
+app.get('/test', (req, res) => {
+  var eventids = req.query;
+  db.getEventsArray(eventids, function(events){
+    res.send(events)
+  })
+})
 // })
 
 app.post('/itinerary', function(req, res) {
