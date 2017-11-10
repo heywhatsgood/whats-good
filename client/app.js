@@ -1,4 +1,4 @@
-angular.module('whatsGood', ['ngMaterial', 'firebase'])
+angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
   .config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('altTheme')
       .primaryPalette('blue-grey')
@@ -14,7 +14,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
   .component('myApp', {
     bindings: {
     },
-    controller: function($mdDialog, $http, $mdSidenav) {
+    controller: function($mdDialog, $http, $mdSidenav, $cookies) {
       const ctrl = this;
 
       this.currentNavItem = 'home';
@@ -23,8 +23,8 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
       this.password = '';
 
       //collapse this
-      this.openLoginModal = (event, loginType) => {
-        var loginController = function($mdDialog, $http, Auth) {
+      this.openLoginDialog = (event, loginType) => {
+        var loginController = function($mdDialog, $http, Auth, $cookies) {
           const lCtrl = this;
           this.loginType = loginType;
           this.email = '';
@@ -38,7 +38,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
               .then(function(firebaseUser) {
                 // lCtrl.uid = firebaseUser.uid;
                 // lCtrl.user = firebaseUser;
-                console.log('user created ', lCtrl.uid);
+                console.log('user created ', firebaseUser);
                 callback(true);
               }).catch(function(error) {
                 console.log('error creating', error);
@@ -48,7 +48,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
           lCtrl.loginUser = (callback) => {
             Auth.$signInWithEmailAndPassword(lCtrl.email, lCtrl.password)
               .then(function(firebaseUser) {
-                lCtrl.uid = firebaseUser.uid;
+                lCtrl.user.uid = firebaseUser.uid;
                 lCtrl.user.accountInfo = firebaseUser;
                 lCtrl.user.displayName = lCtrl.displayName;
                 console.log('user logged in ', lCtrl.user.displayName);
@@ -99,6 +99,8 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
 
           lCtrl.answer = function (user) {
             console.log('Succesfully signed in: ', user.displayName);
+            //store user cookie
+            $cookies.putObject('myWhatsGoodUser', user);
             $mdDialog.hide(user);
           };
         };
@@ -177,6 +179,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
       };
 
       this.$onInit = () => {
+        const userCookie = $cookies.get('myWhatsGoodUser');
       };
 
       this.goto = (page) => {
@@ -206,10 +209,10 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
           </md-nav-item>
           <span flex></span>
           <div ng-if="!$ctrl.isValidUser">
-            <md-button md-no-ink class="md-primary" ng-click="$ctrl.openLoginModal($event, 'login')">
+            <md-button md-no-ink class="md-primary" ng-click="$ctrl.openLoginDialog($event, 'login')">
               Login
             </md-button>
-            <md-button md-no-ink class="md-primary" ng-click="$ctrl.openLoginModal($event, 'signup')">
+            <md-button md-no-ink class="md-primary" ng-click="$ctrl.openLoginDialog($event, 'signup')">
               Sign Up
             </md-button>
           </div>
@@ -231,7 +234,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
           <md-sidenav
             class="md-sidenav-left"
             md-component-id="left"
-            md-is-locked-open="$mdMedia('gt-md')"
+            md-is-locked-open="$mdMedia('gt-sm')"
             md-whiteframe="4">
 
             <md-toolbar class="md-theme-indigo">
@@ -244,24 +247,24 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
             </md-toolbar>
             <md-content layout-padding>
               <p>
-                List Item 1
+                Rating Item 1
               </p>
               <p>
-                List Item 2
+                Rating Item 2
               </p>
               <p>
-                List Item 3
+                Rating Item 3
               </p>
               <p>
-                List Item 4
+                Rating Item 4
               </p>
               <p>
-                List Item 5
+                Rating Item 5
               </p>
             </md-content>
             <span flex></span>
             <md-button>Action 1</md-button>
-            <md-button>Action 2</md-button>
+            <md-button>Action 2</md-button> 
           </md-sidenav>
 
           <!-- start of app content -->
