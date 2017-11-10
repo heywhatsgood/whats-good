@@ -54,9 +54,11 @@ angular.module('whatsGood')
 
         <div flex layout="column" class="boxWithHeight" layout-padding>
 
-          <section flex="70">
-            <itineray-details />
-          </section>
+          <section flex>
+            
+            <itinerary-card/>
+         
+            </section>
           <section flex ></section>
         </div>
       </div>
