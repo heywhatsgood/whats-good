@@ -21,7 +21,8 @@ angular.module('whatsGood')
       let form = this;
 
       // Search results
-      this.searchResults = [];
+      this.eventResults = [];
+      this.foodResults = [];
 
       // Search routing
       this.getSearch = () => {
@@ -29,7 +30,7 @@ angular.module('whatsGood')
           form.location,
           form.keyword,
           form.userState
-        )
+        );
         $http({
           method: 'POST',
           url: '/search',
@@ -39,8 +40,14 @@ angular.module('whatsGood')
             type: form.userState,
           }
         }).then((result) => {
-          form.searchResults = result.data
-          console.log(form.searchResults)
+          if (form.userState === 'Food'){
+            form.foodResults = result.data.businesses
+            console.log(form.foodResults)
+          }
+          if (form.userState === 'Event'){
+            form.eventResults = result.data
+            console.log(form.eventResults)
+          }
         })
       }
         //Post to /search function to get api call
@@ -92,12 +99,10 @@ angular.module('whatsGood')
         <!-- End testing =============== -->
       </div>
 
-      <div> <!-- ng-if="$ctrl.results.length !== 0">--> 
-
-        <!-- Make the if > 0 when ready -->
+      <div>
         <md-content>
         <md-list flex>
-          <md-list-item class="md-3-line" ng-repeat="item in $ctrl.searchResults" ng-click="null">
+          <md-list-item class="md-3-line" ng-repeat="item in $ctrl.eventResults" ng-click="null">
             <img ng-src="{{item.image[0].url[0]}}" class="md-avatar"/>
             <div class="md-list-item-text" layout="column">
               <h3>{{ item.title[0] }}</h3>
@@ -106,8 +111,20 @@ angular.module('whatsGood')
             </div>
           </md-list-item>
         </md-list>
-        <!-- End Material Import-->
-
       </div>
+
+      <div>
+      <md-content>
+      <md-list flex>
+        <md-list-item class="md-3-line" ng-repeat="item in $ctrl.foodResults" ng-click="null">
+          <img ng-src="{{item.image_url}}" class="md-avatar"/>
+          <div class="md-list-item-text" layout="column">
+            <h3>{{ item.name }}</h3>
+            <h4>Rating: {{item.rating}}, Price: {{ item.price }}</h4>
+            <p>{{ item.location.display_address[0] }}, {{item.location.display_address[1]}}</p>
+          </div>
+        </md-list-item>
+      </md-list>
+    </div>
     `
   });
