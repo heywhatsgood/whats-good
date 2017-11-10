@@ -1,4 +1,4 @@
-angular.module('whatsGood', ['ngMaterial', 'firebase'])
+angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
   .config(function ($mdThemingProvider) {
     $mdThemingProvider.theme('altTheme')
       .primaryPalette('blue-grey')
@@ -14,7 +14,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
   .component('myApp', {
     bindings: {
     },
-    controller: function($mdDialog, $http) {
+    controller: function($mdDialog, $http, $mdSidenav, $cookies) {
       const ctrl = this;
 
       this.currentNavItem = 'home';
@@ -23,22 +23,58 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
       this.password = '';
 
       //collapse this
-      this.openLoginModal = (event, loginType) => {
-        var loginController = function($mdDialog, $http, Auth) {
+      this.openLoginDialog = (event, loginType) => {
+        var loginController = function($mdDialog, $http, Auth, $cookies) {
           const lCtrl = this;
           this.loginType = loginType;
           this.email = '';
           this.displayName = '';
           this.passwordError = '';
-          this.uid = '';
+          this.firebaseId = '';
           this.user = {};
+          this.showProgress = false;
+
+          lCtrl.handleSocialLogin = (website) => {
+            lCtrl.showProgress = true;
+            Auth.$signInWithPopup(website)
+              .then(function(result) {
+                console.log('Signed in ' + website + ' user as:', result.user);
+                lCtrl.user.firebaseId = result.user.uid;
+                lCtrl.user.accountInfo = result.user;
+                lCtrl.user.displayName = result.user.displayName;
+                $http({
+                  method: 'POST',
+                  url: '/login',
+                  data: lCtrl.user
+                }).then(function(userData) {
+                  //server should send back list data
+                  //userData = {user, wasCreated}
+                  console.log('server confirmed ' + website + ' login', userData);
+                  lCtrl.answer(userData.data);
+                  lCtrl.showProgress = false;                    
+                }, function(err) {
+                  console.log(website + ' auth on localhost failed', err);
+                });
+                lCtrl.answer(lCtrl.user);
+              }).catch(function(error) {
+                console.error('Authentication failed:', error);
+              });
+          };
+
+          lCtrl.handleFacebookLogin = () => {
+            lCtrl.showProgress = true;            
+            lCtrl.handleSocialLogin('facebook');
+          };
+
+          lCtrl.handleGoogleLogin = () => {
+            lCtrl.showProgress = true;            
+            lCtrl.handleSocialLogin('google');            
+          };
 
           lCtrl.createUser = (callback) => {
             Auth.$createUserWithEmailAndPassword(lCtrl.email, lCtrl.password)
               .then(function(firebaseUser) {
-                // lCtrl.uid = firebaseUser.uid;
-                // lCtrl.user = firebaseUser;
-                console.log('user created ', lCtrl.uid);
+                console.log('user created ', firebaseUser);
                 callback(true);
               }).catch(function(error) {
                 console.log('error creating', error);
@@ -48,7 +84,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
           lCtrl.loginUser = (callback) => {
             Auth.$signInWithEmailAndPassword(lCtrl.email, lCtrl.password)
               .then(function(firebaseUser) {
-                lCtrl.uid = firebaseUser.uid;
+                lCtrl.user.firebaseId = firebaseUser.uid;
                 lCtrl.user.accountInfo = firebaseUser;
                 lCtrl.user.displayName = lCtrl.displayName;
                 console.log('user logged in ', lCtrl.user.displayName);
@@ -75,10 +111,23 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
               //log in new user
               lCtrl.loginUser(function(signedInUser) {
                 if (signedInUser) {
+                  lCtrl.showProgress = true;
                   console.log('passing signin data to mdialog hide', signedInUser);
-                  lCtrl.answer(signedInUser);
+                  $http({
+                    method: 'POST',
+                    url: '/login',
+                    data: signedInUser
+                  }).then(function(userData) {
+                    //server should send back list data
+                    //userData = {user, wasCreated}
+                    console.log('server confirmed login', userData);
+                    lCtrl.answer(userData.data);
+                    lCtrl.showProgress = false;                    
+                  }, function(err) {
+                    console.log('user auth on localhost failed', err);
+                  });
                 } else {
-                  //user createion failed
+                  //user login failed
 
                 }
               });
@@ -97,12 +146,19 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
             $mdDialog.cancel();
           };
 
-          lCtrl.answer = function (user) {
-            console.log('Succesfully signed in: ', user.displayName);
+          lCtrl.answer = function (userData) {
+            console.log('Succesfully signed in: ', userData);
+            //store user cookie
+            var user = {
+              displayName: userData.displayName,
+              firebaseId: userData.firebaseId,
+            };
+            $cookies.putObject('myWhatsGoodUser', user);
             $mdDialog.hide(user);
           };
         };
 
+        //shows the dialog directive with the above controller
         $mdDialog.show({
           controller: loginController,
           controllerAs: 'login',
@@ -140,18 +196,32 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
                     </md-input-container>
                   </md-content>
                 </md-dialog-content>
-
+                <md-progress-linear class="md-accent" ng-if="login.showProgress" md-mode="indeterminate"></md-progress-linear>
                 <md-dialog-actions layout="row">
-                  <md-button ng-click="login.handleLoginButton(login.displayName, login.password)">
-                    Login
-                  </md-button>
-                  <span flex></span>
-                  <md-button ng-if="login.loginType === 'login'" ng-click="login.loginType='signup'">
-                    Sign-Up
-                  </md-button>
-                  <md-button ng-click="login.cancel()">
-                    Cancel
-                  </md-button>
+                  <div layout="column" flex="100">
+                    <div layout="row" layout-align="space-around center">                
+                      <md-button ng-click="login.handleLoginButton(login.displayName, login.password)">
+                        Login
+                      </md-button>
+                      <md-button ng-if="login.loginType === 'login'" ng-click="login.loginType='signup'">
+                        Sign-Up
+                      </md-button>
+                      <md-button ng-click="login.cancel()">
+                        Cancel
+                      </md-button>
+                    </div>
+                    <div layout="row" layout-align="center center">
+                      <md-button class="md-icon-button logo" ng-click="login.handleSocialLogin('google')" aria-label="googleSubmit">
+                        <img class="logo-image" style="width:100%; height:100%;" src="./images/social-svg/google.png">
+                      </md-button>
+                      <md-button class="md-icon-button logo" ng-click="login.handleSocialLogin('github')" aria-label="githubSubmit">
+                        <img class="logo-image" style="width:100%; height:100%;" src="./images/social-svg/github.png">
+                      </md-button>
+                      <md-button class="md-icon-button logo" ng-click="login.handleSocialLogin('facebook')" aria-label="facebookSubmit">
+                        <img class="logo-image" style="width:100%; height:100%;" src="./images/social-svg/facebook.png">
+                      </md-button>
+                    </div>
+                  </div>
                 </md-dialog-actions>
               </form>
             </md-dialog>
@@ -161,7 +231,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
           clickOutsideToClose: true,
         })
           .then(function (user) {
-            console.log('answered', user.displayName);
+            console.log('answered', user);
             ctrl.user = user;
             ctrl.displayName = user.displayName;
             ctrl.isValidUser = true;
@@ -174,9 +244,43 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
         this.isValidUser = false;
         this.user = {};
         this.password = '';
+        $cookies.remove('myWhatsGoodUser');
       };
 
       this.$onInit = () => {
+        //init firebase server
+        var config = {
+          apiKey: 'AIzaSyDG1EUoj_7D2F7gUCqEdnu8TsxX4FNXOJw',
+          authDomain: 'whats-good-21ec5.firebaseapp.com',
+          databaseURL: 'https://whats-good-21ec5.firebaseio.com',
+          projectId: 'whats-good-21ec5',
+          storageBucket: 'whats-good-21ec5.appspot.com',
+          messagingSenderId: '602796983600'
+        };
+        firebase.initializeApp(config);
+
+        const userCookie = $cookies.getObject('myWhatsGoodUser');
+        console.log('loaded user cookie', userCookie);
+        if (userCookie) {
+          $http({
+            method: 'GET',
+            url: '/login',
+            params: userCookie
+          }).then(function(userExists) {
+            //server should send back list data
+            console.log(userExists);
+            if (userExists.data === true) {
+              ctrl.isValidUser = true;
+              ctrl.displayName = userCookie.displayName;
+            } else {
+              console.log('user doesn\'t exist on server');
+              $cookies.remove('myWhatsGoodUser');            
+            }
+            
+          }, function(err) {
+            console.log('user auth on localhost failed', err);
+          });
+        }
       };
 
       this.goto = (page) => {
@@ -206,10 +310,10 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
           </md-nav-item>
           <span flex></span>
           <div ng-if="!$ctrl.isValidUser">
-            <md-button md-no-ink class="md-primary" ng-click="$ctrl.openLoginModal($event, 'login')">
+            <md-button md-no-ink class="md-primary" ng-click="$ctrl.openLoginDialog($event, 'login')">
               Login
             </md-button>
-            <md-button md-no-ink class="md-primary" ng-click="$ctrl.openLoginModal($event, 'signup')">
+            <md-button md-no-ink class="md-primary" ng-click="$ctrl.openLoginDialog($event, 'signup')">
               Sign Up
             </md-button>
           </div>
@@ -226,37 +330,76 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
           </div>
         </md-nav-bar>
 
-        <!-- start of app content -->
-        <md-content flex>
-          <div ng-if="$ctrl.currentNavItem === 'home' && $ctrl.isValidUser === false">
-            <md-content layout="column" flex>
-              <!-- Home for anon user-->
-              <home-anon />
+          <!-- itinerary sidebar -->
+        <section layout="row" flex>
+          <md-sidenav
+            class="md-sidenav-left"
+            md-component-id="left"
+            md-is-locked-open="$mdMedia('gt-sm')"
+            md-whiteframe="4">
 
+            <md-toolbar class="md-theme-indigo">
+              <div style="position:relative;">
+                <img flex="100" ng-src="https://i.pinimg.com/originals/1f/62/f0/1f62f042f2381d36e09a58949e94562f.jpg">
+                <div style="position:absolute; bottom:0px; left:0px; height:auto; width:100%; text-align:center; font-size:1em; padding: 10px 0px; background-color:rgba(0,0,0,0.6)">
+                  Santa Monica Trip with the boys
+                </div>
+              </div>
+            </md-toolbar>
+            <md-content layout-padding>
+              <p>
+                Rating Item 1
+              </p>
+              <p>
+                Rating Item 2
+              </p>
+              <p>
+                Rating Item 3
+              </p>
+              <p>
+                Rating Item 4
+              </p>
+              <p>
+                Rating Item 5
+              </p>
             </md-content>
-          </div>
-          <div ng-if="$ctrl.currentNavItem === 'home' && $ctrl.isValidUser === true">
-            <md-content layout="column" flex>
-              <!-- Home for valid user-->
-              <home-user />
+            <span flex></span>
+            <md-button>Action 1</md-button>
+            <md-button>Action 2</md-button> 
+          </md-sidenav>
 
-            </md-content>
-          </div>
-          <div ng-if="$ctrl.currentNavItem === 'search'">
-            <md-content layout="column" flex>
-              <!-- search field -->
-              <itinerary-search />
+          <!-- start of app content -->
+          <md-content flex>
+            <div ng-if="$ctrl.currentNavItem === 'home' && $ctrl.isValidUser === false">
+              <md-content layout="column" flex>
+                <!-- Home for anon user-->
+                <home-anon />
 
-            </md-content>
-          </div>
-          <div ng-if="$ctrl.currentNavItem === 'itinerary'">
-            <md-content layout="column" flex>
-              <!-- itinerary area-->
-              <itinerary />
+              </md-content>
+            </div>
+            <div ng-if="$ctrl.currentNavItem === 'home' && $ctrl.isValidUser === true">
+              <md-content layout="column" flex>
+                <!-- Home for valid user-->
+                <home-user />
 
-            </md-content>
-          </div>
-        </md-content>
+              </md-content>
+            </div>
+            <div ng-if="$ctrl.currentNavItem === 'search'">
+              <md-content layout="column" flex>
+                <!-- search field -->
+                <itinerary-search />
+
+              </md-content>
+            </div>
+            <div ng-if="$ctrl.currentNavItem === 'itinerary'">
+              <md-content layout="column" flex>
+                <!-- itinerary area-->
+                <itinerary />
+
+              </md-content>
+            </div>
+          </md-content>
+        </section>
       </div>
     </div>
 `
