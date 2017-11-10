@@ -16,19 +16,20 @@ angular.module('whatsGood')
   <div layout-gt-sm="column" flex>
   <md-content class="md-padding">
     <md-card style="min-height: 75%" layout-margin flex>
-      <md-grid-list md-cols-sm ="2" md-cols-md="4" md-cols-gt-md="6" md-row-height-gt-md="2:2" md-row-height="2:1" md-gutter="12px">
-        <md-grid-tile md-rowspan="3" md-colspan="2" >
+      <md-grid-list md-cols-sm ="2" md-cols-md="4" md-cols-gt-md="6" md-row-height-gt-md="3:2" md-row-height="3:2" md-gutter="8px" md-gutter-gt-md="12px">
+        
+        <md-grid-tile md-rowspan-gt-md="3" md-colspan-gt-md="2" md-rowspan="4" md-colspan="4">
           <img ng-src='https://i.pinimg.com/originals/36/de/cf/36decffaf32edd893921e36d932c0843.jpg' layout-fill/>
         </md-grid-tile>
       
-      <md-grid-tile md-rowspan="3" md-colspan="4" class="blue" layout-align="end center" flex style="background: #b9f6ca;">
+      <md-grid-tile md-rowspan="3" md-colspan="4" layout-align="end center" flex style="background: #b9f6ca;">
         <md-grid-tile-header layout-margin layout-align="center center" style="height: 25%">
           <h1 >{{$ctrl.item.name}}</h1>
         </md-grid-tile-header>
   
         <section flex>      
-          <div layout="column" layout-margin layout-align=" center center"  style="height: 50%" flex>
-            <h1>
+          <div layout-gt-sm="column" layout-margin layout-align=" center center"  style="height: 50%" >
+            <h1 layout-margin>
             {{$ctrl.item.address}}
               12345 Somewhere St,
             <br>
@@ -40,14 +41,25 @@ angular.module('whatsGood')
           </div>
         </section>
       </md-grid-tile>
+      <md-grid-tile md-rowspan="3" md-colspan="4" md-colspan-gt-md="6" style="background: #b9f6ca;" flex>
+        <div layout-gt-sm="column" layout-align=" center center" layout-padding flex>
+          <p layout-margin>
+            {{$ctrl.item.description}}
+          </p>
+        </div>
+      
+      </md-grid-tile> 
+   
+      
 
-     <md-grid-tile md-rowspan="2" md-colspan="6" style="background: #84ffff;" flex>
-        <div layout-gt-md="column" layout-align=" center center" layout-padding layout-fill flex>
-          <p layout-margin layout-fill>
+   <!-- <md-grid-tile md-rowspan="4" md-colspan="6" style="background: #b9f6ca;" flex>
+        <div layout-gt-sm="column" layout-align=" center center" layout-padding flex>
+          <p layout-margin>
           {{$ctrl.item.description}}
           </p>
-        </md-content>
-      </md-grid-tile>
+        </div>
+        
+      </md-grid-tile> -->
     </md-grid-list> 
   </md-card>
   </md-content>
