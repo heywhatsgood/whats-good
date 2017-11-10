@@ -20,7 +20,7 @@ angular.module('whatsGood')
 
       <md-divider></md-divider>
     
-      <div layout-gt-md="row" layout-align= "center center" flex >
+      <div layout-gt-sm="row" layout-align= "center center" flex >
         <md-card flex flex-gt-md="30">
           <img ng-src="http://www.minico.com/blog/wp-content/uploads/2015/04/ThinkstockPhotos-460880491.jpg" class="md-card-image" alt="Washed Out" >
           <md-card-content>
