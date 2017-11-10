@@ -9,6 +9,7 @@ const controlUsers = {
     db.Users.findOrCreate({
       where: {
 <<<<<<< itinerarysidebar
+<<<<<<< itinerarysidebar
         email: user.accountInfo.email,
         firebaseId: user.accountInfo.uid,
         displayname: user.displayName,        
@@ -21,6 +22,12 @@ const controlUsers = {
         firebaseId: user.accountInfo.uid,
       }
 >>>>>>> sql user database working
+=======
+        email: user.accountInfo.email,
+        firebaseId: user.accountInfo.uid,
+        displayname: user.displayName,        
+      },
+>>>>>>> added check user name, id, email with server before create
     })
       .spread((user, created) => {
         cb(user);
