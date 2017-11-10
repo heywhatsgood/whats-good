@@ -34,6 +34,43 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           this.user = {};
           this.showProgress = false;
 
+          lCtrl.handleSocialLogin = (website) => {
+            lCtrl.showProgress = true;
+            Auth.$signInWithPopup(website)
+              .then(function(result) {
+                console.log('Signed in ' + website + ' user as:', result.user);
+                lCtrl.user.firebaseId = result.user.uid;
+                lCtrl.user.accountInfo = result.user;
+                lCtrl.user.displayName = result.user.displayName;
+                $http({
+                  method: 'POST',
+                  url: '/login',
+                  data: lCtrl.user
+                }).then(function(userData) {
+                  //server should send back list data
+                  //userData = {user, wasCreated}
+                  console.log('server confirmed ' + website + ' login', userData);
+                  lCtrl.answer(userData.data);
+                  lCtrl.showProgress = false;                    
+                }, function(err) {
+                  console.log(website + ' auth on localhost failed', err);
+                });
+                lCtrl.answer(lCtrl.user);
+              }).catch(function(error) {
+                console.error('Authentication failed:', error);
+              });
+          };
+
+          lCtrl.handleFacebookLogin = () => {
+            lCtrl.showProgress = true;            
+            lCtrl.handleSocialLogin('facebook');
+          };
+
+          lCtrl.handleGoogleLogin = () => {
+            lCtrl.showProgress = true;            
+            lCtrl.handleSocialLogin('google');            
+          };
+
           lCtrl.createUser = (callback) => {
             Auth.$createUserWithEmailAndPassword(lCtrl.email, lCtrl.password)
               .then(function(firebaseUser) {
@@ -112,8 +149,12 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           lCtrl.answer = function (userData) {
             console.log('Succesfully signed in: ', userData);
             //store user cookie
-            $cookies.putObject('myWhatsGoodUser', userData);
-            $mdDialog.hide(userData);
+            var user = {
+              displayName: userData.displayName,
+              firebaseId: userData.firebaseId,
+            };
+            $cookies.putObject('myWhatsGoodUser', user);
+            $mdDialog.hide(user);
           };
         };
 
@@ -157,16 +198,30 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                 </md-dialog-content>
                 <md-progress-linear class="md-accent" ng-if="login.showProgress" md-mode="indeterminate"></md-progress-linear>
                 <md-dialog-actions layout="row">
-                  <md-button ng-click="login.handleLoginButton(login.displayName, login.password)">
-                    Login
-                  </md-button>
-                  <span flex></span>
-                  <md-button ng-if="login.loginType === 'login'" ng-click="login.loginType='signup'">
-                    Sign-Up
-                  </md-button>
-                  <md-button ng-click="login.cancel()">
-                    Cancel
-                  </md-button>
+                  <div layout="column" flex="100">
+                    <div layout="row" layout-align="space-around center">                
+                      <md-button ng-click="login.handleLoginButton(login.displayName, login.password)">
+                        Login
+                      </md-button>
+                      <md-button ng-if="login.loginType === 'login'" ng-click="login.loginType='signup'">
+                        Sign-Up
+                      </md-button>
+                      <md-button ng-click="login.cancel()">
+                        Cancel
+                      </md-button>
+                    </div>
+                    <div layout="row" layout-align="center center">
+                      <md-button class="md-icon-button logo" ng-click="login.handleSocialLogin('google')" aria-label="googleSubmit">
+                        <img class="logo-image" style="width:100%; height:100%;" src="./images/social-svg/google.png">
+                      </md-button>
+                      <md-button class="md-icon-button logo" ng-click="login.handleSocialLogin('github')" aria-label="githubSubmit">
+                        <img class="logo-image" style="width:100%; height:100%;" src="./images/social-svg/github.png">
+                      </md-button>
+                      <md-button class="md-icon-button logo" ng-click="login.handleSocialLogin('facebook')" aria-label="facebookSubmit">
+                        <img class="logo-image" style="width:100%; height:100%;" src="./images/social-svg/facebook.png">
+                      </md-button>
+                    </div>
+                  </div>
                 </md-dialog-actions>
               </form>
             </md-dialog>
@@ -203,7 +258,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           messagingSenderId: '602796983600'
         };
         firebase.initializeApp(config);
-        
+
         const userCookie = $cookies.getObject('myWhatsGoodUser');
         console.log('loaded user cookie', userCookie);
         if (userCookie) {
