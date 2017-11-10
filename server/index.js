@@ -23,25 +23,15 @@ app.get('/', function(req, res) {
 
 });
 
-
-//SIGNUP-LOGIN
-app.post('/signup', function(req, res) {
-  var signUp = req.body;
-  var userObj = {};
-  //!!important check if  username exists
-
-  //save to sql database
-  // sqlDb.POST(signUp, function(res){
-  // 	res.send(200)
-  // })
-
-
-});
-
 app.post('/login', function(req, res) {
   //check if exists on sql db
   //return boolean
-	
+  const user = req.body;
+  sqlDb.db.controlUsers.post(user, function(created) {
+    //get user list data here before sending to user;
+    console.log('user created in sql db');
+    res.send(created);
+  });
 });
 
 
@@ -49,12 +39,12 @@ app.post('/login', function(req, res) {
 app.post('/search', function(req, res) {
   var data = req.body;
   //data = {
-  //type: 'activity' || 'food'
+  //type: 'Event' || 'Food'
   //location: {city, state, date}
   //search: '';
   //}
 
-  if (data.type === 'food') {
+  if (data.type === 'Food') {
 
     yelp(data.location, data.search, function(food) {
       console.log(food);
@@ -62,7 +52,7 @@ app.post('/search', function(req, res) {
     });
   }
   
-  if (data.type === 'event') {
+  if (data.type === 'Event') {
     eventful.getEvents(data.location, data.search, function(events) {
       console.log('get events ', events);
       res.send(events);
@@ -80,10 +70,10 @@ app.post('/search', function(req, res) {
 
 app.get('/test', (req, res) => {
   var eventids = req.query;
-  db.getEventsArray(eventids, function(events){
-    res.send(events)
-  })
-})
+  db.getEventsArray(eventids, function(events) {
+    res.send(events);
+  });
+});
 // })
 
 app.post('/itinerary', function(req, res) {
@@ -91,13 +81,10 @@ app.post('/itinerary', function(req, res) {
   //save userId, userlist to sql, grab id
   //sqlDb.POST(itinBody, function(res){
   //take both ids and put into new table in mongoDB
-  // 	db.POST(res, function(res){
-  // 		res.send(201, res?);
-  // 	})
+  //  db.POST(res, function(res){
+  //  res.send(201, res?);
+  //  })
   // })
-	
-	
-	
 });
 
 

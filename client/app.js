@@ -32,6 +32,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           this.passwordError = '';
           this.uid = '';
           this.user = {};
+          this.showProgress = false;
 
           lCtrl.createUser = (callback) => {
             Auth.$createUserWithEmailAndPassword(lCtrl.email, lCtrl.password)
@@ -75,10 +76,22 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
               //log in new user
               lCtrl.loginUser(function(signedInUser) {
                 if (signedInUser) {
+                  lCtrl.showProgress = true;
                   console.log('passing signin data to mdialog hide', signedInUser);
-                  lCtrl.answer(signedInUser);
+                  $http({
+                    method: 'POST',
+                    url: '/login',
+                    data: signedInUser
+                  }).then(function(userListData) {
+                    //server should send back list data
+                    console.log(userListData);
+                    lCtrl.answer(signedInUser);
+                    lCtrl.showProgress = false;                    
+                  }, function(err) {
+                    console.log('user auth on localhost failed', err);
+                  });
                 } else {
-                  //user createion failed
+                  //user login failed
 
                 }
               });
@@ -143,7 +156,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                     </md-input-container>
                   </md-content>
                 </md-dialog-content>
-
+                <md-progress-linear class="md-accent" ng-if="login.showProgress" md-mode="indeterminate"></md-progress-linear>
                 <md-dialog-actions layout="row">
                   <md-button ng-click="login.handleLoginButton(login.displayName, login.password)">
                     Login

@@ -8,10 +8,19 @@ const controlUsers = {
   post: function(user, cb) {
     db.Users.findOrCreate({
       where: {
+<<<<<<< itinerarysidebar
         email: user.accountInfo.email,
         firebaseId: user.accountInfo.uid,
         displayname: user.displayName,        
       },
+=======
+        email: user.accountInfo.email
+      },
+      defaults: {
+        displayname: user.displayName,
+        firebaseId: user.accountInfo.uid,
+      }
+>>>>>>> sql user database working
     })
       .spread((user, created) => {
         cb(user);
