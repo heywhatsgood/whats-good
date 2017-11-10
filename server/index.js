@@ -16,10 +16,18 @@ app.use(express.static(path.join(__dirname, '../client')));
 
 
 //LANDING PAGE
-app.get('/', function(req, res) {
+app.get('/login', function(req, res) {
   //landing page is userlist AFTER login
   //get from mongoBD (see below)
-  res.send();
+  const user = req.query;
+  if (user.firebaseId) {
+    sqlDb.db.controlUsers.get(user, function(userExists) {
+      res.send(userExists);
+    });
+  } else {
+    console.log('no user uid');
+    res.send(false);
+  }
 
 });
 
@@ -27,10 +35,10 @@ app.post('/login', function(req, res) {
   //check if exists on sql db
   //return boolean
   const user = req.body;
-  sqlDb.db.controlUsers.post(user, function(created) {
-    //get user list data here before sending to user;
-    console.log('user created in sql db');
-    res.send(created);
+  sqlDb.db.controlUsers.post(user, function(user, created) {
+    //if user created get user list data here before sending to user;
+    console.log('user created in sql db', user.dataValues);
+    res.send(user.dataValues);
   });
 });
 

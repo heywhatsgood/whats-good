@@ -16,7 +16,7 @@ db
   });
 
 const Users = db.define('users', {
-  displayname: Sequelize.STRING,
+  displayName: Sequelize.STRING,
   firebaseId: Sequelize.STRING,
   email: Sequelize.STRING
 }, {

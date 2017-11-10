@@ -3,34 +3,32 @@ const db = require('./models.js');
 
 const controlUsers = {
   get: function(user, cb) {
+    db.Users.findOne({
+      where: {
+        firebaseId: user.firebaseId,
+        displayName: user.displayName,
+      }
+    }).then((userExists) => {
+      if (userExists) {
+        cb(true);
+      } else {
+        cb(false);
+      }
+    });
 
   },
   post: function(user, cb) {
     db.Users.findOrCreate({
       where: {
-<<<<<<< itinerarysidebar
-<<<<<<< itinerarysidebar
+        firebaseId: user.accountInfo.uid,
+      }, defaults: {
         email: user.accountInfo.email,
-        firebaseId: user.accountInfo.uid,
-        displayname: user.displayName,        
-      },
-=======
-        email: user.accountInfo.email
-      },
-      defaults: {
-        displayname: user.displayName,
-        firebaseId: user.accountInfo.uid,
+        displayName: user.displayName,
+
       }
->>>>>>> sql user database working
-=======
-        email: user.accountInfo.email,
-        firebaseId: user.accountInfo.uid,
-        displayname: user.displayName,        
-      },
->>>>>>> added check user name, id, email with server before create
     })
       .spread((user, created) => {
-        cb(user);
+        cb(user, true);
       });
   }
 };

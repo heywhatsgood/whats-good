@@ -30,15 +30,13 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           this.email = '';
           this.displayName = '';
           this.passwordError = '';
-          this.uid = '';
+          this.firebaseId = '';
           this.user = {};
           this.showProgress = false;
 
           lCtrl.createUser = (callback) => {
             Auth.$createUserWithEmailAndPassword(lCtrl.email, lCtrl.password)
               .then(function(firebaseUser) {
-                // lCtrl.uid = firebaseUser.uid;
-                // lCtrl.user = firebaseUser;
                 console.log('user created ', firebaseUser);
                 callback(true);
               }).catch(function(error) {
@@ -49,7 +47,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           lCtrl.loginUser = (callback) => {
             Auth.$signInWithEmailAndPassword(lCtrl.email, lCtrl.password)
               .then(function(firebaseUser) {
-                lCtrl.user.uid = firebaseUser.uid;
+                lCtrl.user.firebaseId = firebaseUser.uid;
                 lCtrl.user.accountInfo = firebaseUser;
                 lCtrl.user.displayName = lCtrl.displayName;
                 console.log('user logged in ', lCtrl.user.displayName);
@@ -82,10 +80,11 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                     method: 'POST',
                     url: '/login',
                     data: signedInUser
-                  }).then(function(userListData) {
+                  }).then(function(userData) {
                     //server should send back list data
-                    console.log(userListData);
-                    lCtrl.answer(signedInUser);
+                    //userData = {user, wasCreated}
+                    console.log('server confirmed login', userData);
+                    lCtrl.answer(userData.data);
                     lCtrl.showProgress = false;                    
                   }, function(err) {
                     console.log('user auth on localhost failed', err);
@@ -110,11 +109,11 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             $mdDialog.cancel();
           };
 
-          lCtrl.answer = function (user) {
-            console.log('Succesfully signed in: ', user.displayName);
+          lCtrl.answer = function (userData) {
+            console.log('Succesfully signed in: ', userData);
             //store user cookie
-            $cookies.putObject('myWhatsGoodUser', user);
-            $mdDialog.hide(user);
+            $cookies.putObject('myWhatsGoodUser', userData);
+            $mdDialog.hide(userData);
           };
         };
 
@@ -177,7 +176,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           clickOutsideToClose: true,
         })
           .then(function (user) {
-            console.log('answered', user.displayName);
+            console.log('answered', user);
             ctrl.user = user;
             ctrl.displayName = user.displayName;
             ctrl.isValidUser = true;
@@ -190,11 +189,43 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
         this.isValidUser = false;
         this.user = {};
         this.password = '';
+        $cookies.remove('myWhatsGoodUser');
       };
 
       this.$onInit = () => {
-        const userCookie = $cookies.get('myWhatsGoodUser');
-        $http.post
+        //init firebase server
+        var config = {
+          apiKey: 'AIzaSyDG1EUoj_7D2F7gUCqEdnu8TsxX4FNXOJw',
+          authDomain: 'whats-good-21ec5.firebaseapp.com',
+          databaseURL: 'https://whats-good-21ec5.firebaseio.com',
+          projectId: 'whats-good-21ec5',
+          storageBucket: 'whats-good-21ec5.appspot.com',
+          messagingSenderId: '602796983600'
+        };
+        firebase.initializeApp(config);
+        
+        const userCookie = $cookies.getObject('myWhatsGoodUser');
+        console.log('loaded user cookie', userCookie);
+        if (userCookie) {
+          $http({
+            method: 'GET',
+            url: '/login',
+            params: userCookie
+          }).then(function(userExists) {
+            //server should send back list data
+            console.log(userExists);
+            if (userExists.data === true) {
+              ctrl.isValidUser = true;
+              ctrl.displayName = userCookie.displayName;
+            } else {
+              console.log('user doesn\'t exist on server');
+              $cookies.remove('myWhatsGoodUser');            
+            }
+            
+          }, function(err) {
+            console.log('user auth on localhost failed', err);
+          });
+        }
       };
 
       this.goto = (page) => {
