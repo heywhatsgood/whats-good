@@ -111,7 +111,7 @@ angular.module('whatsGood')
         <!-- End testing =============== -->
       </div>
 
-      <div>
+      <div ng-if="$ctrl.userState === 'Event'">
         <md-content>
         <md-list flex>
           <md-list-item class="md-3-line" ng-repeat="item in $ctrl.eventResults" ng-click="null">
@@ -125,15 +125,15 @@ angular.module('whatsGood')
         </md-list>
       </div>
 
-      <div>
+      <div ng-if="$ctrl.userState === 'Food'">
       <md-content>
       <md-list flex>
         <md-list-item class="md-3-line" ng-repeat="item in $ctrl.foodResults" ng-click="null">
           <img ng-src="{{item.image_url}}" class="md-avatar"/>
           <div class="md-list-item-text" layout="column">
-            <h3>{{ item.name }}</h3>
-            <h4>Rating: {{item.rating}}, Price: {{ item.price }}</h4>
-            <p>{{ item.location.display_address[0] }}, {{item.location.display_address[1]}}</p>
+            <h3>{{item.name}}</h3>
+            <h4>Rating: {{item.rating}}, Price: {{item.price}}. {{item.categories[0].title}}, {{item.categories[1].title}}, {{item.categories[2].title}}.</h4>
+            <p>{{item.location.display_address[0]}}, {{item.location.display_address[1]}}</p>
           </div>
         </md-list-item>
       </md-list>
