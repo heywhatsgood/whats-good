@@ -22,7 +22,7 @@ angular.module('whatsGood')
           <img ng-src='https://i.pinimg.com/originals/36/de/cf/36decffaf32edd893921e36d932c0843.jpg' layout-fill/>
         </md-grid-tile>
       
-      <md-grid-tile md-rowspan="3" md-colspan-md="4" layout-align="end center" flex style="background: #b9f6ca;">
+      <md-grid-tile md-rowspan="3" md-colspan="4" layout-align="end center" flex style="background: #b9f6ca;">
         <md-grid-tile-header layout-margin layout-align="center center" style="height: 25%">
           <h1 >{{$ctrl.item.name}}</h1>
         </md-grid-tile-header>

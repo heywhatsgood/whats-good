@@ -1,6 +1,12 @@
 angular.module('whatsGood')
   .component('itinerarySearch', {
     bindings: {
+      handleItinerarySearch: '&',
+      // location: '<',
+      // keyword: '<',
+      // userState: '<'
+      eventResults: '<',
+      foodResults: '<'
     },
     controller: function ($http) {
 
@@ -11,7 +17,7 @@ angular.module('whatsGood')
       this.location = {
         state: 'California'
       };
-      this.keyword = '';
+      // this.keyword = '';
       this.type = '';
       this.userState = 'Event';
       this.states = [{activity: 'Event'}, {activity: 'Food'}]
@@ -25,31 +31,33 @@ angular.module('whatsGood')
       this.foodResults = [];
 
       // Search routing
-      this.getSearch = () => {
-        console.log(
-          form.location,
-          form.keyword,
-          form.userState
-        );
-        $http({
-          method: 'POST',
-          url: '/search',
-          data: {
-            location: form.location,
-            search: form.keyword,
-            type: form.userState,
-          }
-        }).then((result) => {
-          if (form.userState === 'Food'){
-            form.foodResults = result.data.businesses
-            console.log(form.foodResults)
-          }
-          if (form.userState === 'Event'){
-            form.eventResults = result.data
-            console.log(form.eventResults)
-          }
-        })
-      }
+      // this.getSearch = () => {
+      //   console.log(
+      //     form.location,
+      //     form.keyword,
+      //     form.userState
+      //   );
+      //   $http({
+      //     method: 'POST',
+      //     url: '/search',
+      //     data: {
+      //       location: form.location,
+      //       search: form.keyword,
+      //       type: form.userState,
+      //     }
+      //   }).then((result) => {
+      //     if (form.userState === 'Food'){
+      //       form.foodResults = result.data.businesses
+      //       console.log(form.foodResults)
+      //     }
+      //     if (form.userState === 'Event'){
+      //       form.eventResults = result.data
+      //       console.log(form.eventResults)
+      //     }
+      //   })
+      // }
+
+
         //Post to /search function to get api call
     },
     template: `
@@ -89,7 +97,11 @@ angular.module('whatsGood')
                 </md-input-container>
 
                 <md-input-container>
-                  <md-button class="md-raised" ng-click="$ctrl.getSearch()" style="margin-top: -10px">wass good?</md-button> 
+                  <md-button class="md-raised" ng-click="$ctrl.handleItinerarySearch({form: {
+                    location: $ctrl.location,
+                    keyword: $ctrl.keyword,
+                    userState: $ctrl.userState
+                  }})" style="margin-top: -10px">wass good?</md-button> 
                 </md-input-container>
 
               </div>
@@ -103,7 +115,7 @@ angular.module('whatsGood')
         <md-content>
         <md-list flex>
           <md-list-item class="md-3-line" ng-repeat="item in $ctrl.eventResults" ng-click="null">
-            <img ng-src="{{item.image[0].url[0]}}" class="md-avatar"/>
+            <img ng-src="{{item.image[0].url[0]}}" onerror="this.src='https://www.blog.google/static/blog/images/google-200x200.7714256da16f.png'" class="md-avatar"/>
             <div class="md-list-item-text" layout="column">
               <h3>{{ item.title[0] }}</h3>
               <h4>{{ item.description[0] }}</h4>
