@@ -2,13 +2,15 @@ angular.module('whatsGood')
   .component('itinerarySearch', {
     bindings: {
     },
-    controller: function () {
+    controller: function ($http) {
 
       // View Controller
       this.view = "search"
 
       // Search form controller
-      this.location = '';
+      this.location = {
+        state: 'California'
+      };
       this.keyword = '';
       this.type = '';
       this.userState = 'Event';
@@ -23,24 +25,28 @@ angular.module('whatsGood')
 
       // Search routing
       this.getSearch = () => {
+        console.log(
+          form.location,
+          form.keyword,
+          form.userState
+        )
         $http({
           method: 'POST',
           url: '/search',
           data: {
             location: form.location,
-            keyword: form.keyword,
-            type: form.type,
+            search: form.keyword,
+            type: form.userState,
           }
         }).then((result) => {
-          console.log(result.data)
-          this.searchResults = result.data
+          form.searchResults = result.data
+          console.log(form.searchResults)
         })
       }
         //Post to /search function to get api call
     },
     template: `
       <div>
-        
 
         <!-- Testing Material Angular JS -->
 
@@ -49,7 +55,7 @@ angular.module('whatsGood')
           <md-card>
             <md-card-title>
               <md-card-title-text>
-                <span class="md-headline">So, What's Good, (...in)</span>
+                <span class="md-headline"><center>So, What's Good, (...in)</center></span>
                 <span class="md-subhead"></span>
               </md-card-title-text>
             </md-card-title>
@@ -58,12 +64,12 @@ angular.module('whatsGood')
               <div layout="row">
                 <md-input-container>
                   <label>Keyword</label>
-                  <input>
+                  <input ng-model="$ctrl.keyword">
                 </md-input-container>
         
                 <md-input-container>
                   <label>Location</label>
-                  <input>
+                  <input ng-model="$ctrl.location.city">
                 </md-input-container>
         
                 <md-input-container>
@@ -74,6 +80,11 @@ angular.module('whatsGood')
                     </md-option>
                   </md-select>
                 </md-input-container>
+
+                <md-input-container>
+                  <md-button class="md-raised" ng-click="$ctrl.getSearch()" style="margin-top: -10px">wass good?</md-button> 
+                </md-input-container>
+
               </div>
             </md-card-content>
           </md-card>
@@ -81,23 +92,22 @@ angular.module('whatsGood')
         <!-- End testing =============== -->
       </div>
 
-      <div ng-if="$ctrl.results.length === 0"> 
+      <div> <!-- ng-if="$ctrl.results.length !== 0">--> 
+
         <!-- Make the if > 0 when ready -->
-        <div ng-repeat="listing in $ctrl.searchResults">
-          {{listing.name}}
-        </div>
+        <md-content>
+        <md-list flex>
+          <md-list-item class="md-3-line" ng-repeat="item in $ctrl.searchResults" ng-click="null">
+            <img ng-src="{{item.image[0].url[0]}}" class="md-avatar"/>
+            <div class="md-list-item-text" layout="column">
+              <h3>{{ item.title[0] }}</h3>
+              <h4>{{ item.description[0] }}</h4>
+              <p>{{ item.venue_name[0]}}, {{item.venue_address[0]}}, {{item.city_name[0]}}, {{item.postal_code[0]}}</p>
+            </div>
+          </md-list-item>
+        </md-list>
+        <!-- End Material Import-->
+
       </div>
-`
+    `
   });
-
-  //city
-  //state
-  //date
-  //type
-
-//  var data = req.body;
-  //data = {
-  //type: 'activity' || 'food'
-  //location: {city, state, date}
-  //search: '';
-  //}
