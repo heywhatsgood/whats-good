@@ -240,6 +240,33 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           });
       };
 
+      this.handleItinerarySearch = ({form}) => {
+        console.log('made it', form)
+        console.log(
+          form.location,
+          form.keyword,
+          form.userState
+        );
+        $http({
+          method: 'POST',
+          url: '/search',
+          data: {
+            location: form.location,
+            search: form.keyword,
+            type: form.userState,
+          }
+        }).then((result) => {
+          if (form.userState === 'Food'){
+            ctrl.foodResults = result.data.businesses
+            console.log(ctrl.foodResults)
+          }
+          if (form.userState === 'Event'){
+            ctrl.eventResults = result.data
+            console.log(ctrl.eventResults)
+          }
+        })
+      }
+
       this.logout = () => {
         this.isValidUser = false;
         this.user = {};
@@ -387,7 +414,11 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             <div ng-if="$ctrl.currentNavItem === 'search'">
               <md-content layout="column" flex>
                 <!-- search field -->
-                <itinerary-search />
+                <itinerary-search
+                handle-itinerary-search="$ctrl.handleItinerarySearch({form: form})"
+                event-results= "$ctrl.eventResults"
+                food-results= "$ctrl.foodResults"
+                ></itinerary-search>
 
               </md-content>
             </div>
