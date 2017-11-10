@@ -1,6 +1,7 @@
 const yelpApi = require('./config.js');
 const request = require('request-promise');
-
+const eventfulKey = require('./config.js');
+const apiKey = eventfulKey.yelpApiKey;
 
 const yelpRequest = function(location, query, callback) {
   const params = { 
@@ -14,7 +15,7 @@ var options = {
   url: 'https://api.yelp.com/v3/businesses/search',
   qs: params,
   headers: {
-    authorization: yelpApi.YELP_ACCESS_TOKEN
+    authorization: apiKey
   }
   // json:true
   }

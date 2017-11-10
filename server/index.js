@@ -3,10 +3,9 @@ const parser = require('body-parser');
 const path = require('path');
 // const db = require('./db/mongo/controller.js');
 const sqlDb = require('./db/sql/controller.js');
-//external apis
-const apiKeys = require('./helpers/config.js');
 const yelp = require('./helpers/yelpHelpers.js');
 const eventful = require('./helpers/eventful.js');
+
 
 const app = express();
 
@@ -97,4 +96,15 @@ app.post('/itinerary', function(req, res) {
 
 
 
-app.listen(3000, () => console.log('Listening on port 3000'));
+
+
+
+
+
+
+
+
+
+
+
+app.listen(3000, ()=> console.log('Listening on port 3000'));
