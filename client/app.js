@@ -14,7 +14,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
   .component('myApp', {
     bindings: {
     },
-    controller: function($mdDialog, $http) {
+    controller: function($mdDialog, $http, $mdSidenav) {
       const ctrl = this;
 
       this.currentNavItem = 'home';
@@ -226,37 +226,76 @@ angular.module('whatsGood', ['ngMaterial', 'firebase'])
           </div>
         </md-nav-bar>
 
-        <!-- start of app content -->
-        <md-content flex>
-          <div ng-if="$ctrl.currentNavItem === 'home' && $ctrl.isValidUser === false">
-            <md-content layout="column" flex>
-              <!-- Home for anon user-->
-              <home-anon />
+          <!-- itinerary sidebar -->
+        <section layout="row" flex>
+          <md-sidenav
+            class="md-sidenav-left"
+            md-component-id="left"
+            md-is-locked-open="$mdMedia('gt-md')"
+            md-whiteframe="4">
 
+            <md-toolbar class="md-theme-indigo">
+              <div style="position:relative;">
+                <img flex="100" ng-src="https://i.pinimg.com/originals/1f/62/f0/1f62f042f2381d36e09a58949e94562f.jpg">
+                <div style="position:absolute; bottom:0px; left:0px; height:auto; width:100%; text-align:center; font-size:1em; padding: 10px 0px; background-color:rgba(0,0,0,0.6)">
+                  Santa Monica Trip with the boys
+                </div>
+              </div>
+            </md-toolbar>
+            <md-content layout-padding>
+              <p>
+                List Item 1
+              </p>
+              <p>
+                List Item 2
+              </p>
+              <p>
+                List Item 3
+              </p>
+              <p>
+                List Item 4
+              </p>
+              <p>
+                List Item 5
+              </p>
             </md-content>
-          </div>
-          <div ng-if="$ctrl.currentNavItem === 'home' && $ctrl.isValidUser === true">
-            <md-content layout="column" flex>
-              <!-- Home for valid user-->
-              <home-user />
+            <span flex></span>
+            <md-button>Action 1</md-button>
+            <md-button>Action 2</md-button>
+          </md-sidenav>
 
-            </md-content>
-          </div>
-          <div ng-if="$ctrl.currentNavItem === 'search'">
-            <md-content layout="column" flex>
-              <!-- search field -->
-              <itinerary-search />
+          <!-- start of app content -->
+          <md-content flex>
+            <div ng-if="$ctrl.currentNavItem === 'home' && $ctrl.isValidUser === false">
+              <md-content layout="column" flex>
+                <!-- Home for anon user-->
+                <home-anon />
 
-            </md-content>
-          </div>
-          <div ng-if="$ctrl.currentNavItem === 'itinerary'">
-            <md-content layout="column" flex>
-              <!-- itinerary area-->
-              <itinerary />
+              </md-content>
+            </div>
+            <div ng-if="$ctrl.currentNavItem === 'home' && $ctrl.isValidUser === true">
+              <md-content layout="column" flex>
+                <!-- Home for valid user-->
+                <home-user />
 
-            </md-content>
-          </div>
-        </md-content>
+              </md-content>
+            </div>
+            <div ng-if="$ctrl.currentNavItem === 'search'">
+              <md-content layout="column" flex>
+                <!-- search field -->
+                <itinerary-search />
+
+              </md-content>
+            </div>
+            <div ng-if="$ctrl.currentNavItem === 'itinerary'">
+              <md-content layout="column" flex>
+                <!-- itinerary area-->
+                <itinerary />
+
+              </md-content>
+            </div>
+          </md-content>
+        </section>
       </div>
     </div>
 `
