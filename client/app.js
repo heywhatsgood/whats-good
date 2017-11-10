@@ -105,6 +105,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           };
         };
 
+        //shows the dialog directive with the above controller
         $mdDialog.show({
           controller: loginController,
           controllerAs: 'login',
@@ -180,6 +181,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
 
       this.$onInit = () => {
         const userCookie = $cookies.get('myWhatsGoodUser');
+        $http.post
       };
 
       this.goto = (page) => {
