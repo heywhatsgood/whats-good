@@ -8,9 +8,9 @@ const controlUsers = {
         firebaseId: user.firebaseId,
         displayName: user.displayName,
       }
-    }).then((userExists) => {
-      if (userExists) {
-        cb(true);
+    }).then((user) => {
+      if (user) {
+        cb(user);
       } else {
         cb(false);
       }
@@ -35,7 +35,16 @@ const controlUsers = {
 
 
 const controlUsersLists = {
-  get: function(usersLists, cb) {
+  get: function(user, cb) {
+    db.UsersLists.findAll({
+      where: {
+        firebaseId: user.firebaseId
+      },
+      attributes: ['id', 'itineraryName']
+    })
+      .then((allItineraries) => {
+        cb(allItineraries);
+      });
 
   },
   post: function(itinerary, cb) {
