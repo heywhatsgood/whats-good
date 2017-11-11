@@ -48,11 +48,11 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                   method: 'POST',
                   url: '/login',
                   data: lCtrl.user
-                }).then(function(userData) {
+                }).then(function(userLists) {
                   //server should send back list data
                   //userData = {user, wasCreated}
                   console.log('server confirmed ' + website + ' login', userData);
-                  lCtrl.answer(userData.data);
+                  lCtrl.answer(userLists.data);
                   lCtrl.showProgress = false;                    
                 }, function(err) {
                   console.log(website + ' auth on localhost failed', err);

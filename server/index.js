@@ -21,7 +21,15 @@ app.get('/login', function(req, res) {
   const user = req.query;
   if (user.firebaseId) {
     sqlDb.db.controlUsers.get(user, function(userExists) {
-      res.send(userExists);
+      if (userExists) {
+        // console.log(currentUser);
+        sqlDb.db.controlUsersLists.get(user, function(userLists) {
+          console.log('grabbed user lists: ', userLists);
+          res.send(userLists);
+        });
+      } else {
+        res.send(false);
+      }
     });
   } else {
     console.log('no user uid');
@@ -36,8 +44,10 @@ app.post('/login', function(req, res) {
   const user = req.body;
   sqlDb.db.controlUsers.post(user, function(user, created) {
     //if user created get user list data here before sending to user;
-    console.log('user created in sql db', user.dataValues);
-    res.send(user.dataValues);
+    // console.log(currentUser);
+    sqlDb.db.controlUsersLists.get(user, function(userLists) {
+      res.send(userLists);
+    });
   });
 });
 
@@ -95,25 +105,15 @@ app.post('/itinerary', function(req, res) {
 
     res.send();  
   });
-  //sqlDb.POST(itinBody, function(res){
-  //take both ids and put into new table in mongoDB
-  //  db.POST(res, function(res){
-  //  res.send(201, res?);
-  //  })
-  // })
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
+app.get('/itinerary', function(req, res) {
+  const currentUser = req.query;
+  // console.log(currentUser);
+  sqlDb.db.controlUsersLists.get(currentUser, function(userLists) {
+    console.log(userLists);
+    res.send(userLists);
+  });
+});
 
 app.listen(3000, ()=> console.log('Listening on port 3000'));

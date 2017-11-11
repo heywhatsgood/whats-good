@@ -35,7 +35,16 @@ const controlUsers = {
 
 
 const controlUsersLists = {
-  get: function(usersLists, cb) {
+  get: function(user, cb) {
+    db.UsersLists.findAll({
+      where: {
+        firebaseId: user.firebaseId
+      },
+      attributes: ['id', 'itineraryName']
+    })
+      .then((allItineraries) => {
+        cb(allItineraries);
+      });
 
   },
   post: function(itinerary, cb) {

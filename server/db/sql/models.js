@@ -3,7 +3,8 @@ const postgresUrl = 'postgres://ojgiieyj:B_Umu3eifqfsPAiNNzUNkT_eXDpIHXG5@baasu.
 
 const db = new Sequelize(postgresUrl, {
   dialect: 'postgres',
-  operatorsAliases: false
+  operatorsAliases: false,
+  logging: false
 });
 
 db
