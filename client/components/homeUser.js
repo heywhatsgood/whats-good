@@ -27,24 +27,23 @@ angular.module('whatsGood')
       <div layout="column" layout-align="start center ">
         <h1>TRENDING</h1>
       </div>
-        <div layout-gt-md="row" layout="column" layout-align="center none" >
-            <md-card flex flex-gt-md="30" style="min-height:50%;">
-        
-            <md-card-content>
+        <div layout-gt-md="row" layout="column" layout-align="center none" style="max-height:60%;">
+            <md-card flex flex-gt-md="20" >
+            <md-card-content flex>
             <md-card-title>
             <md-card-title-text>
                 <span class="md-headline">{{$ctrl.topRated[0].name}}</span>
             </md-card-title-text>
         </md-card-title>
-            <img ng-src="{{$ctrl.topRated[0].image_url}}" class="md-card-image" flex="90"/>
+            <img ng-src="{{$ctrl.topRated[0].image_url}}" class="md-card-image" style="max-height:55%; min-width:100%;"/>
             <md-list-item class="md-3-line">
-            <!--  <img ng-src="https://media-cdn.tripadvisor.com/media/photo-o/06/45/0e/fe/fino-cocktail-bar-restaurant.jpg" class="md-card-image" flex="30"/> -->
+            
               <div class="md-list-item-text" layout="column">
               
-                <h1>Rating: {{$ctrl.topRated[0].rating}}</h1>
-                <h1>Pricing: {{$ctrl.topRated[0].price}}</h1>
+                <h1>Rating: {{$ctrl.topRated[0].rating}}<br>
+                Pricing: {{$ctrl.topRated[0].price}}</h2>
                 <h3>
-                  {{$ctrl.topRated[0].location.display_address[0]}}
+                  {{$ctrl.topRated[0].location.display_address[0]}},</br>
                   {{$ctrl.topRated[0].location.display_address[1]}}
                 </h3>
                 <h3>Contact: {{$ctrl.topRated[0].phone}}</h3>
@@ -58,47 +57,69 @@ angular.module('whatsGood')
               </md-card-actions>
             </md-card>
 
-            <md-card layout-align="center center" flex flex-gt-md="30" style="min-height:50%;">
-            <md-card-content>
-              <img ng-src="https://media-cdn.tripadvisor.com/media/photo-o/06/45/0e/fe/fino-cocktail-bar-restaurant.jpg" class="md-card-image" flex="70" layout-align="start center"/>
-              <md-list-item class="md-3-line">
-              <!--  <img ng-src="https://media-cdn.tripadvisor.com/media/photo-o/06/45/0e/fe/fino-cocktail-bar-restaurant.jpg" class="md-card-image" flex="30"/> -->
-                <div class="md-list-item-text" layout="column">
-                <h1 layout-margin> NAME OF PLACE</h1>
-                  <h1>Rating: RATING HERE</h1>
-                  <h1>Pricing: PRICING HERE</h1>
-                  <p>ADDRESS</p>
-                </div>
-              </md-list-item>
-            </md-card-content>
-            <span flex></span>
-            <md-card-actions layout="row" layout-align="end center">
-              <md-button>Action 1</md-button>
-              <md-button>Action 2</md-button>
-            </md-card-actions>
-          </md-card>
-
-            <md-card layout-align="center center"flex flex-gt-md="30" style="min-height:50%;">
-            <md-card-content>
-            <img ng-src="https://media-cdn.tripadvisor.com/media/photo-o/06/45/0e/fe/fino-cocktail-bar-restaurant.jpg" class="md-card-image" flex="70" layout-align="center"/>
+            <md-card flex flex-gt-md="20" >
+            <md-card-content flex>
+            <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">{{$ctrl.topRated[1].name}}</span>
+            </md-card-title-text>
+        </md-card-title>
+            <img ng-src="{{$ctrl.topRated[1].image_url}}" class="md-card-image" style="max-height:55%; min-width:100%;"/>
             <md-list-item class="md-3-line">
-            <!--  <img ng-src="https://media-cdn.tripadvisor.com/media/photo-o/06/45/0e/fe/fino-cocktail-bar-restaurant.jpg" class="md-card-image" flex="30"/> -->
+            
               <div class="md-list-item-text" layout="column">
-              <h1 layout-margin> NAME OF PLACE</h1>
-                <h2>Rating: RATING HERE</h2>
-                <h3>Pricing: PRICING HERE</h3>
-                <h5>ADDRESS</h5>
+              
+                <h1>Rating: {{$ctrl.topRated[1].rating}}<br>
+                Pricing: {{$ctrl.topRated[1].price}}</h2>
+                <h3>
+                  {{$ctrl.topRated[1].location.display_address[0]}}, <br>
+                  {{$ctrl.topRated[1].location.display_address[1]}}
+                </h3>
+                <h3>Contact: {{$ctrl.topRated[1].phone}}</h3>
               </div>
             </md-list-item>
           </md-card-content>
-            <span flex></span>
-            <md-card-actions layout="row" layout-align="end center">
-              <md-button>Action 1</md-button>
-              <md-button>Action 2</md-button>
-            </md-card-actions>
-          </md-card>
+              <span flex></span>
+              <md-card-actions layout="row" layout-align="end center">
+                <md-button>Action 1</md-button>
+                <md-button>Action 2</md-button>
+              </md-card-actions>
+            </md-card>
+
+            <md-card flex flex-gt-md="20" >
+            <md-card-content flex>
+            <md-card-title>
+            <md-card-title-text>
+                <span class="md-headline">{{$ctrl.topRated[2].name}}</span>
+            </md-card-title-text>
+        </md-card-title>
+            <img ng-src="{{$ctrl.topRated[2].image_url}}" class="md-card-image" style="max-height:55%; min-width:100%;"/>
+            <md-list-item class="md-3-line">
+            
+              <div class="md-list-item-text" layout="column">
+              
+                <h1>Rating: {{$ctrl.topRated[2].rating}}<br>
+                Pricing: {{$ctrl.topRated[2].price}}</h2>
+                <h3>
+                  {{$ctrl.topRated[2].location.display_address[0]}},<br>
+                  {{$ctrl.topRated[2].location.display_address[1]}}
+                </h3>
+                <h3>Contact: {{$ctrl.topRated[2].phone}}</h3>
+              </div>
+            </md-list-item>
+          </md-card-content>
+              <span flex></span>
+              <md-card-actions layout="row" layout-align="end center">
+                <md-button>Action 1</md-button>
+                <md-button>Action 2</md-button>
+              </md-card-actions>
+            </md-card>
+
+            
+
+            
           </div>
-        </section>   
+           
      
 
 
