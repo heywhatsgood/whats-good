@@ -20,7 +20,9 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       this.currentNavItem = 'home';
       this.isValidUser = false;
       this.user = {};
-      this.password = '';
+      //currentItinerary is array of selected items from 'search' page
+      this.currentItinerary = {};
+      this.currentItinerary.items = [];
 
       //collapse this
       this.openLoginDialog = (event, loginType) => {
@@ -240,6 +242,29 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           });
       };
 
+      this.saveUserItinerary = () => {
+        const userCookie = $cookies.getObject('myWhatsGoodUser');
+        ctrl.currentItinerary.firebaseId = userCookie.firebaseId;
+        console.log(ctrl.currentItinerary, userCookie.firebaseId);
+        // ctrl.currentItinerary.itineraryName = ctrl.
+        // ctrl.currentItinerary = {items:[item{type:'',...}], itineraryName}
+        $http({
+          method: 'POST',
+          url: '/itinerary',
+          data: ctrl.currentItinerary
+        })
+          .then(function(response) {
+            console.log('saved user itinerary');
+          }, function(error) {
+            console.log('error posting user itin', error);
+          });
+      };
+
+      this.handleSearchItemClick = ({item}) => {
+        console.log('clicked', item);
+        ctrl.currentItinerary.items.push(item);
+      };
+
       this.handleItinerarySearch = ({form}) => {
         console.log('made it', form)
         console.log(
@@ -256,11 +281,11 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             type: form.userState,
           }
         }).then((result) => {
-          if (form.userState === 'Food'){
+          if (form.userState === 'Food') {
             ctrl.foodResults = result.data.businesses
             console.log(ctrl.foodResults)
           }
-          if (form.userState === 'Event'){
+          if (form.userState === 'Event') {
             ctrl.eventResults = result.data
             console.log(ctrl.eventResults)
           }
@@ -363,36 +388,62 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             class="md-sidenav-left"
             md-component-id="left"
             md-is-locked-open="$mdMedia('gt-sm')"
-            md-whiteframe="4">
+            md-whiteframe="4"
+            ng-if="$ctrl.currentNavItem !== 'home'">
 
-            <md-toolbar class="md-theme-indigo">
+            <md-toolbar>
               <div style="position:relative;">
                 <img flex="100" ng-src="https://i.pinimg.com/originals/1f/62/f0/1f62f042f2381d36e09a58949e94562f.jpg">
                 <div style="position:absolute; bottom:0px; left:0px; height:auto; width:100%; text-align:center; font-size:1em; padding: 10px 0px; background-color:rgba(0,0,0,0.6)">
-                  Santa Monica Trip with the boys
+                  <input style="background-color:rgba(0,0,0,0); border:none; color:white; width:95%; text-align:center" ng-model="$ctrl.currentItinerary.itineraryName">
                 </div>
               </div>
             </md-toolbar>
             <md-content layout-padding>
-              <p>
-                Rating Item 1
-              </p>
-              <p>
-                Rating Item 2
-              </p>
-              <p>
-                Rating Item 3
-              </p>
-              <p>
-                Rating Item 4
-              </p>
-              <p>
-                Rating Item 5
-              </p>
+              <!-- ng-if for each nav page -->
+              <div ng-if="$ctrl.currentNavItem === 'search'">
+                <div ng-repeat="item in $ctrl.currentItinerary.items">
+                <!-- ng-if item.type = event -->
+                  <div ng-if="item.type='Event'">
+                    <h4>{{item.title[0]}}</h4>
+                    <h5>{{item.city_name[0]}}</h5>
+                  </div>
+                  <div ng-if="item.type='Food'">
+                    <h4>{{item.name}}</h4>
+                    <p>{{item.location.address1}} {{item.location.zip_code}}</p>
+                  </div>
+                  <md-divider ng-if="!$last"></md-divider>
+                </div>
+              </div>
+              <div ng-if="$ctrl.currentNavItem === 'itinerary'">
+                <p>
+                  Rating Item 1
+                </p>
+                <p>
+                  Rating Item 2
+                </p>
+                <p>
+                  Rating Item 3
+                </p>
+                <p>
+                  Rating Item 4
+                </p>
+                <p>
+                  Rating Item 5
+                </p>
+              </div>
             </md-content>
             <span flex></span>
-            <md-button>Action 1</md-button>
-            <md-button>Action 2</md-button> 
+            <md-content layout="row" layout-align="space-around center">
+              <div ng-if="$ctrl.currentNavItem === 'search'">
+                <md-button ng-click="$ctrl.saveUserItinerary()">Save</md-button>
+                <md-button ng-click="$ctrl.currentItinerary={items:[]}">Reset</md-button> 
+              </div>
+              <div ng-if="$ctrl.currentNavItem === 'itinerary'">
+                <md-button>Button 1</md-button>
+                <md-button>Button 2</md-button> 
+              </div>
+            </md-content>
           </md-sidenav>
 
           <!-- start of app content -->
@@ -415,9 +466,10 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
               <md-content layout="column" flex>
                 <!-- search field -->
                 <itinerary-search
-                handle-itinerary-search="$ctrl.handleItinerarySearch({form: form})"
-                event-results= "$ctrl.eventResults"
-                food-results= "$ctrl.foodResults"
+                  handle-itinerary-search="$ctrl.handleItinerarySearch({form: form})"
+                  event-results= "$ctrl.eventResults"
+                  food-results= "$ctrl.foodResults"
+                  handle-search-item-click="$ctrl.handleSearchItemClick({item: item})"
                 ></itinerary-search>
 
               </md-content>
