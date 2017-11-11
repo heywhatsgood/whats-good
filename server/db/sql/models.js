@@ -16,22 +16,25 @@ db
   });
 
 const Users = db.define('users', {
+  firebaseId: {
+    type: Sequelize.STRING,
+    primaryKey: true,
+  },
   displayName: Sequelize.STRING,
-  firebaseId: Sequelize.STRING,
   email: Sequelize.STRING
 }, {
   timestamps: false 
 });
 
 const UsersLists = db.define('usersLists', {
-  listName: Sequelize.STRING
+  itineraryName: Sequelize.STRING
 });
 
 UsersLists.belongsTo(Users, {
-  foreignKey: 'UserId'
+  foreignKey: 'firebaseId'
 });
 Users.hasMany(UsersLists, {
-  foreignKey: 'UserId'
+  foreignKey: 'firebaseId'
 });
 
 // db.sync({force: true});
