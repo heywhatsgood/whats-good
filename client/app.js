@@ -23,6 +23,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       //currentItinerary is array of selected items from 'search' page
       this.currentItinerary = {};
       this.currentItinerary.items = [];
+      this.topRated=[];
 
       //collapse this
       this.openLoginDialog = (event, loginType) => {
@@ -292,6 +293,27 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
         })
       }
 
+      this.topRatedRestaurants = () => {
+        $http({
+          method: 'POST',
+          url: '/search',
+          data: {
+            location: {
+              city: 'santa monica'
+            },
+            search: 'restaurants',
+            type: 'Food',
+          }
+        }).then((result)=>{
+          ctrl.topRated = result.data.businesses;
+          console.log('at top rated restaurants', ctrl.topRated)
+          
+        }, (err)=>{
+          console.log('toprated restaurants', err)
+        })
+
+      }
+
       this.logout = () => {
         this.isValidUser = false;
         this.user = {};
@@ -301,6 +323,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
 
       this.$onInit = () => {
         //init firebase server
+        ctrl.topRatedRestaurants();
         var config = {
           apiKey: 'AIzaSyDG1EUoj_7D2F7gUCqEdnu8TsxX4FNXOJw',
           authDomain: 'whats-good-21ec5.firebaseapp.com',
@@ -458,7 +481,9 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             <div ng-if="$ctrl.currentNavItem === 'home' && $ctrl.isValidUser === true">
               <md-content layout="column" flex>
                 <!-- Home for valid user-->
-                <home-user />
+                <home-user 
+                top-rated="$ctrl.topRated"
+                />
 
               </md-content>
             </div>

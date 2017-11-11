@@ -1,8 +1,12 @@
 angular.module('whatsGood')
   .component('homeUser', {
     bindings: {
+      topRated: '<'
     },
     controller: function () {
+      this.$onInit = () => {
+        console.log('loaded topRated', this.topRated);
+      }
     },
     template: `
    
@@ -18,8 +22,10 @@ angular.module('whatsGood')
           </div>
         </div>
         <md-divider></md-divider>
+
+        
       <div layout="column" layout-align="start center ">
-      <h1 >TRENDING</h1>
+        <h1>TRENDING</h1>
       </div>
         <div layout-gt-md="row" layout="column" layout-align="center none" >
             <md-card flex flex-gt-md="30" style="min-height:50%;">
@@ -27,17 +33,21 @@ angular.module('whatsGood')
             <md-card-content>
             <md-card-title>
             <md-card-title-text>
-                <span class="md-headline">NAME OF PLACE</span>
+                <span class="md-headline">{{$ctrl.topRated[0].name}}</span>
             </md-card-title-text>
         </md-card-title>
-            <img ng-src="https://media-cdn.tripadvisor.com/media/photo-o/06/45/0e/fe/fino-cocktail-bar-restaurant.jpg" class="md-card-image" flex="90"/>
+            <img ng-src="{{$ctrl.topRated[0].image_url}}" class="md-card-image" flex="90"/>
             <md-list-item class="md-3-line">
             <!--  <img ng-src="https://media-cdn.tripadvisor.com/media/photo-o/06/45/0e/fe/fino-cocktail-bar-restaurant.jpg" class="md-card-image" flex="30"/> -->
               <div class="md-list-item-text" layout="column">
               
-                <h1>Rating: RATING HERE</h1>
-                <h1>Pricing: PRICING HERE</h1>
-                <p>ADDRESS</p>
+                <h1>Rating: {{$ctrl.topRated[0].rating}}</h1>
+                <h1>Pricing: {{$ctrl.topRated[0].price}}</h1>
+                <h3>
+                  {{$ctrl.topRated[0].location.display_address[0]}}
+                  {{$ctrl.topRated[0].location.display_address[1]}}
+                </h3>
+                <h3>Contact: {{$ctrl.topRated[0].phone}}</h3>
               </div>
             </md-list-item>
           </md-card-content>
@@ -88,7 +98,7 @@ angular.module('whatsGood')
             </md-card-actions>
           </md-card>
           </div>
-        
+        </section>   
      
 
 
