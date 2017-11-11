@@ -119,7 +119,7 @@ angular.module('whatsGood')
             <img ng-src="{{item.image[0].url[0]}}" onerror="this.src='https://www.blog.google/static/blog/images/google-200x200.7714256da16f.png'" class="md-avatar"/>
             <div class="md-list-item-text" layout="column">
               <h3>{{ item.title[0] }}</h3>
-              <h4>{{ item.description[0] }}</h4>
+              <h4>{{ item.description[0] || 'Add this event to see more details!'}}</h4>
               <p>{{ item.venue_name[0]}}, {{item.venue_address[0]}}, {{item.city_name[0]}}, {{item.postal_code[0]}}</p>
             </div>
           </md-list-item>

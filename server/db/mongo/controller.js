@@ -1,20 +1,21 @@
 var mongoose = require('mongoose');
-var db = mongoose.connect('mongodb://localhost/eventlist', {useMongoClient: true});
+// var db = mongoose.connect('mongodb://localhost/eventlist', {useMongoClient: true});
+var keys = require('../../helpers/config.js');
+var mlabKey = keys.mlabsKey;
 // Use below for Mlabs address
-// var db = mongoose.connect('mongodb://localhost/',{useMongoClient:true}) 
+var db = mongoose.connect(mlabKey,{useMongoClient:true}) 
+
 mongoose.Promise = global.Promise;
 
-db.once('open'), ()=>{
+db.once('open', ()=>{
   console.log('Connected to the DB');
-};
+});
 
 var ItinerarySchema = new mongoose.Schema({
-  listname: String,
-  listid: Number,
-  userid: String,
-  date: String, // This might need to be DATE, but it's not a great format
-  eventids: [],
-  eventtime: [],
+  firebaseId: String,
+  listid: String,
+  itineraryName: String,
+  items: [mongoose.Schema.Types.Mixed],
 });
 
 var EventSchema = new mongoose.Schema({
@@ -65,13 +66,15 @@ var saveEvent = function(passE) {
 
 var saveItinerary = function(passI) {
 
-  var newI = new db.Itinerary;
-  newI.listname = passI.listname;
-  newI.listid = passI.listid;
-  newI.userid = passI.userid;
-  newI.date = passI.date;
-  newI.eventids = passI.eventids;
-  newI.eventtime = passI.eventtime;
+  var newI = new Itinerary;
+  newI.itineraryName = passI.itineraryName;
+  newI.firebaseId = passI.firebaseId;
+  newI.listId = passI.listId;
+  passI.items.forEach(function(item){
+    delete item['$']
+    delete item['$$hashKey']
+  })
+  newI.items = passI.items;
 
   newI.save(function (err, newItinerary) {
     if (err) {return console.log(err);}
@@ -96,18 +99,42 @@ var getItsEvents = function(id) {
   });  
 };
 
-var getEventsArray = function(eventsarr) {
-  var totalevents = [];
-  for (var i = 0; i < eventsarr.length; i++) {
-    Event.find({eventid: eventsarr[i]}, (err, event) =>{
+// var getEventsArray = function(eventsarr) {
+//   var totalevents = [];
+//   for (var i = 0; i < eventsarr.length; i++) {
+//     Event.find({eventid: eventsarr[i]}, (err, event) =>{
+//       if (err) {
+//         return console.log(err);
+//       } else {
+//         totalevents.push(event);
+//       }
+//     });
+//   }
+//   return totalevents;
+// };
+
+var getItinArray = function(itinarr, cb) {
+  var totalitins = [];
+  for (var i = 0; i < itinarr.length; i++) {
+    Itinerary.find({listid: itinarr[i]}, (err, itin) =>{
       if (err) {
         return console.log(err);
       } else {
-        totalevents.push(event);
+        totalevents.push(itin);
       }
     });
   }
-  return totalevents;
+  cb(totalitins)
 };
 
-module.exports = {Itinerary, Event, saveEvent, saveItinerary, getItsEvents};
+var getItinerary = function(listid, cb) {
+  Itinerary.find({listid: listid}, (err, itinobj) => {
+    if (err) {
+      return console.log(err)
+    } else {
+      cb(itinobj)
+    }
+  })
+}
+
+module.exports = {Itinerary, Event, saveEvent, saveItinerary, getItsEvents, getItinArray, getItinerary};
