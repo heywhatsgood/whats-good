@@ -23,6 +23,8 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       //currentItinerary is array of selected items from 'search' page
       this.currentItinerary = {};
       this.currentItinerary.items = [];
+      //this.allItineraries is all user itinerary names and Ids
+      
 
       //collapse this
       this.openLoginDialog = (event, loginType) => {
@@ -156,7 +158,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
               firebaseId: userData.firebaseId,
             };
             $cookies.putObject('myWhatsGoodUser', user);
-            $mdDialog.hide(user);
+            $mdDialog.hide(userData);
           };
         };
 
@@ -237,6 +239,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             ctrl.user = user;
             ctrl.displayName = user.displayName;
             ctrl.isValidUser = true;
+            ctrl.allItineraries = user.allItineraries;
           }, function () {
             console.log('canceled');
           });
@@ -324,13 +327,14 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             params: userCookie
           }).then(function(userExists) {
             //server should send back list data
-            console.log(userExists);
+            console.log(userExists.data);
             if (userExists.data) {
               ctrl.isValidUser = true;
               ctrl.displayName = userCookie.displayName;
+              ctrl.allItineraries = userExists.data.allItineraries;
             } else {
               console.log('user doesn\'t exist on server');
-              $cookies.remove('myWhatsGoodUser');            
+              $cookies.remove('myWhatsGoodUser');
             }
             
           }, function(err) {

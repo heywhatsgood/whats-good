@@ -19,10 +19,14 @@ app.get('/login', function(req, res) {
   //landing page is userlist AFTER login
   //get from mongoBD (see below)
   const user = req.query;
-  console.log(user);
   if (user.firebaseId) {
-    sqlDb.db.controlUsers.get(user, function(user) {
-      res.send(user);
+    sqlDb.db.controlUsers.get(user, function(currentUser) {
+      currentUser = currentUser.dataValues;
+      sqlDb.db.controlUsersLists.get(currentUser, function(allItineraries) {
+        // console.log(allItineraries);
+        currentUser.allItineraries = allItineraries;
+        res.send(currentUser);
+      });
     });
   } else {
     console.log('no user uid');
@@ -37,8 +41,13 @@ app.post('/login', function(req, res) {
   const user = req.body;
   sqlDb.db.controlUsers.post(user, function(user, created) {
     //if user created get user list data here before sending to user;
-    console.log('user created in sql db', user.dataValues);
-    res.send(user.dataValues);
+    const currentUser = user.dataValues;
+    sqlDb.db.controlUsersLists.get(user, function(allItineraries) {
+      // console.log(allItineraries);
+      currentUser.allItineraries = allItineraries;
+      res.send(user);
+    });
+    // console.log('user created in sql db', currentUser);
   });
 });
 
