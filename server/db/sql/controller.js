@@ -8,9 +8,9 @@ const controlUsers = {
         firebaseId: user.firebaseId,
         displayName: user.displayName,
       }
-    }).then((userExists) => {
-      if (userExists) {
-        cb(true);
+    }).then((user) => {
+      if (user) {
+        cb(user);
       } else {
         cb(false);
       }

@@ -48,12 +48,12 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                   method: 'POST',
                   url: '/login',
                   data: lCtrl.user
-                }).then(function(userLists) {
+                }).then(function(userData) {
                   //server should send back list data
                   //userData = {user, wasCreated}
                   console.log('server confirmed ' + website + ' login', userData);
-                  lCtrl.answer(userLists.data);
-                  lCtrl.showProgress = false;                    
+                  lCtrl.answer(userData.data);
+                  lCtrl.showProgress = false;
                 }, function(err) {
                   console.log(website + ' auth on localhost failed', err);
                 });
@@ -260,6 +260,10 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           });
       };
 
+      this.getAllUserItineraries = (user) => {
+
+      };
+
       this.handleSearchItemClick = ({item}) => {
         console.log('clicked', item);
         ctrl.currentItinerary.items.push(item);
@@ -321,7 +325,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           }).then(function(userExists) {
             //server should send back list data
             console.log(userExists);
-            if (userExists.data === true) {
+            if (userExists.data) {
               ctrl.isValidUser = true;
               ctrl.displayName = userCookie.displayName;
             } else {
