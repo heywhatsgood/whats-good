@@ -1,7 +1,7 @@
 const express = require('express');
 const parser = require('body-parser');
 const path = require('path');
-// const db = require('./db/mongo/controller.js');
+const db = require('./db/mongo/controller.js');
 const sqlDb = require('./db/sql/controller.js');
 const yelp = require('./helpers/yelpHelpers.js');
 const eventful = require('./helpers/eventful.js');
@@ -87,13 +87,17 @@ app.post('/itinerary', function(req, res) {
   // currentItinerary = {items:[item{type:'',...}], itineraryName, firebaseId}
   const currentItinerary = req.body;
   //save userId, userlist to sql, grab id
-  console.log(currentItinerary);
+
+
   sqlDb.db.controlUsersLists.post(currentItinerary, function(userItinerary) {
-    console.log(userItinerary.dataValues.id);
-    var currentItineraryListId = userItinerary.dataValues.id;
+    // console.log(userItinerary.dataValues.id);
+    currentItinerary.listid = userItinerary.dataValues.id;
+    console.log(currentItinerary);
+    db.saveItinerary(currentItinerary)
     //take listId and attatch rest of items to it in mongo db
 
     res.send();  
+
   });
   //sqlDb.POST(itinBody, function(res){
   //take both ids and put into new table in mongoDB
