@@ -38,14 +38,16 @@ const controlUsersLists = {
   get: function(usersLists, cb) {
 
   },
-  post: function(usersLists, cb) {
+  post: function(itinerary, cb) {
+    // currentItinerary = {items:[item{type:'',...}], itineraryName, firebaseId}
     db.UsersLists.findOrCreate({
       where: {
-        listName: usersLists.listName
+        firebaseId: itinerary.firebaseId,
+        itineraryName: itinerary.itineraryName
       }
     })
-      .spread((usersLists, created) => {
-        cb(usersLists);
+      .spread((userItinerary, created) => {
+        cb(userItinerary);
       });
   }
 };

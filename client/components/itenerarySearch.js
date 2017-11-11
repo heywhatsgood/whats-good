@@ -2,6 +2,7 @@ angular.module('whatsGood')
   .component('itinerarySearch', {
     bindings: {
       handleItinerarySearch: '&',
+      handleSearchItemClick: '&',
       // location: '<',
       // keyword: '<',
       // userState: '<'
@@ -21,7 +22,7 @@ angular.module('whatsGood')
       this.type = '';
       this.userState = 'Event';
       this.states = [{activity: 'Event'}, {activity: 'Food'}]
-      this.getSelected = function(){
+      this.getSelected = function() {
         return this.userState
       }
       let form = this;
@@ -114,7 +115,7 @@ angular.module('whatsGood')
       <div ng-if="$ctrl.userState === 'Event'">
         <md-content>
         <md-list flex>
-          <md-list-item class="md-3-line" ng-repeat="item in $ctrl.eventResults" ng-click="null">
+          <md-list-item class="md-3-line" ng-repeat="item in $ctrl.eventResults" ng-click="$ctrl.handleSearchItemClick({item: item})">
             <img ng-src="{{item.image[0].url[0]}}" onerror="this.src='https://www.blog.google/static/blog/images/google-200x200.7714256da16f.png'" class="md-avatar"/>
             <div class="md-list-item-text" layout="column">
               <h3>{{ item.title[0] }}</h3>
@@ -128,7 +129,7 @@ angular.module('whatsGood')
       <div ng-if="$ctrl.userState === 'Food'">
       <md-content>
       <md-list flex>
-        <md-list-item class="md-3-line" ng-repeat="item in $ctrl.foodResults" ng-click="null">
+        <md-list-item class="md-3-line" ng-repeat="item in $ctrl.foodResults" ng-click="$ctrl.handleSearchItemClick({item: item})">
           <img ng-src="{{item.image_url}}" class="md-avatar"/>
           <div class="md-list-item-text" layout="column">
             <h3>{{item.name}}</h3>

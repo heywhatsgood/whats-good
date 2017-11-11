@@ -84,8 +84,17 @@ app.get('/test', (req, res) => {
 // })
 
 app.post('/itinerary', function(req, res) {
-  const itinBody = req.body;
+  // currentItinerary = {items:[item{type:'',...}], itineraryName, firebaseId}
+  const currentItinerary = req.body;
   //save userId, userlist to sql, grab id
+  console.log(currentItinerary);
+  sqlDb.db.controlUsersLists.post(currentItinerary, function(userItinerary) {
+    console.log(userItinerary.dataValues.id);
+    var currentItineraryListId = userItinerary.dataValues.id;
+    //take listId and attatch rest of items to it in mongo db
+
+    res.send();  
+  });
   //sqlDb.POST(itinBody, function(res){
   //take both ids and put into new table in mongoDB
   //  db.POST(res, function(res){
