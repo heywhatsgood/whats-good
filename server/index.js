@@ -85,9 +85,10 @@ app.post('/search', function(req, res) {
 // app.get('/userlist', function(req, res){
 // 	// get from mongodb
 
-app.get('/test', (req, res) => {
+app.get('/itinerary', (req, res) => {
   var eventids = req.query;
-  db.getEventsArray(eventids, function(events) {
+  currentId = eventids.id;
+  db.getItinerary(currentId, function(events) {
     res.send(events);
   });
 });
@@ -111,11 +112,11 @@ app.post('/itinerary', function(req, res) {
   });
 });
 
-app.get('/itinerary', function(req, res) {
+app.get('/itineraries', function(req, res) {
   const currentUser = req.query;
   // console.log(currentUser);
   sqlDb.db.controlUsersLists.get(currentUser, function(userLists) {
-    // console.log(userLists);
+    // console.log(currentUser, userLists);
     res.send(userLists);
   });
 });
