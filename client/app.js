@@ -21,8 +21,10 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       this.isValidUser = false;
       this.user = {};
       //currentItinerary is array of selected items from 'search' page
-      this.currentItinerary = {};
-      this.currentItinerary.items = [];
+      this.currentItinerary = {
+        items: [],
+        itineraryName: 'Name Me Please'
+      };
       //this.allItineraries is all user itinerary names and Ids
       
 
@@ -263,8 +265,18 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           });
       };
 
-      this.getAllUserItineraries = (user) => {
-
+      this.getAllUserItineraries = () => {
+        $http({
+          method: 'GET',
+          url: '/itineraries',
+          params: ctrl.user
+        })
+          .then(function(response) {
+            console.log('got', ctrl.user, ' itinerary', response);
+            ctrl.allItineraries = response.data;
+          }, function(error) {
+            console.log('error posting user itin', error);
+          });
       };
 
       this.handleSearchItemClick = ({item}) => {
@@ -297,7 +309,23 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             console.log(ctrl.eventResults)
           }
         })
-      }
+      };
+
+      this.handleItineraryChange = () => {
+        console.log(this.selectedItinerary);
+        $http({
+          method: 'GET',
+          url: '/itineraries',
+          params: {id: ctrl.selectedItinerary}
+        })
+          .then(function(response) {
+            console.log('got', ctrl.user, ' itinerary', response);
+            //set currentItinerary object to the one from the server
+            // ctrl.currentItinerary = response.data; // would be dope af if this 'just works'
+          }, function(error) {
+            console.log('error posting user itin', error);
+          });
+      };
 
       this.logout = () => {
         this.isValidUser = false;
@@ -331,7 +359,10 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             if (userExists.data) {
               ctrl.isValidUser = true;
               ctrl.displayName = userCookie.displayName;
+              ctrl.user = userCookie;
               ctrl.allItineraries = userExists.data.allItineraries;
+              ctrl.selectedItinerary = '' + ctrl.allItineraries[0].id;
+              console.log('logged in ', ctrl.user);
             } else {
               console.log('user doesn\'t exist on server');
               $cookies.remove('myWhatsGoodUser');
@@ -403,13 +434,18 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
               <div style="position:relative;">
                 <img flex="100" ng-src="https://i.pinimg.com/originals/1f/62/f0/1f62f042f2381d36e09a58949e94562f.jpg">
                 <div style="position:absolute; bottom:0px; left:0px; height:auto; width:100%; text-align:center; font-size:1em; padding: 10px 0px; background-color:rgba(0,0,0,0.6)">
-                  <input style="background-color:rgba(0,0,0,0); border:none; color:white; width:95%; text-align:center" ng-model="$ctrl.currentItinerary.itineraryName">
+                  <input ng-if="$ctrl.currentNavItem === 'search'" style="background-color:rgba(0,0,0,0); border:none; color:white; width:95%; text-align:center" ng-model="$ctrl.currentItinerary.itineraryName">
+                  <select ng-if="$ctrl.currentNavItem === 'itinerary'" ng-change="$ctrl.handleItineraryChange()" ng-model="$ctrl.selectedItinerary" style="background-color:rgba(0,0,0,0); border:none; color:white; width:95%; text-align:center">
+                    <option ng-repeat="itinerary in $ctrl.allItineraries" value="{{itinerary.id}}" style="background-color:black;">
+                      {{itinerary.itineraryName}}
+                    </option>
+                  </select>
                 </div>
               </div>
             </md-toolbar>
             <md-content layout-padding>
               <!-- ng-if for each nav page -->
-              <div ng-if="$ctrl.currentNavItem === 'search'">
+              <div>
                 <div ng-repeat="item in $ctrl.currentItinerary.items">
                 <!-- ng-if item.type = event -->
                   <div ng-if="item.type='Event'">
@@ -423,33 +459,16 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                   <md-divider ng-if="!$last"></md-divider>
                 </div>
               </div>
-              <div ng-if="$ctrl.currentNavItem === 'itinerary'">
-                <p>
-                  Rating Item 1
-                </p>
-                <p>
-                  Rating Item 2
-                </p>
-                <p>
-                  Rating Item 3
-                </p>
-                <p>
-                  Rating Item 4
-                </p>
-                <p>
-                  Rating Item 5
-                </p>
-              </div>
             </md-content>
             <span flex></span>
             <md-content layout="row" layout-align="space-around center">
               <div ng-if="$ctrl.currentNavItem === 'search'">
                 <md-button ng-click="$ctrl.saveUserItinerary()">Save</md-button>
-                <md-button ng-click="$ctrl.currentItinerary={items:[]}">Reset</md-button> 
+                <md-button ng-click="$ctrl.currentItinerary={items:[], itineraryName: 'Name Me Please'}">Reset</md-button> 
               </div>
               <div ng-if="$ctrl.currentNavItem === 'itinerary'">
-                <md-button>Button 1</md-button>
-                <md-button>Button 2</md-button> 
+                <md-button>Share</md-button>
+                <md-button>Delete</md-button> 
               </div>
             </md-content>
           </md-sidenav>
@@ -485,7 +504,12 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             <div ng-if="$ctrl.currentNavItem === 'itinerary'">
               <md-content layout="column" flex>
                 <!-- itinerary area-->
-                <itinerary />
+                <itinerary 
+                  is-valid-user = "$ctrl.isValidUser"
+                  get-all-user-itineraries = "$ctrl.getAllUserItineraries()"
+                  current-itinerary = "$ctrl.currentItinerary"
+                  all-itineraries = "$ctrl.allItineraries"
+                />
 
               </md-content>
             </div>
