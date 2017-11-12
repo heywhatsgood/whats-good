@@ -18,7 +18,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       const ctrl = this;
 
       this.currentNavItem = 'home';
-      this.isValidUser = false;
+      this.isValidUser = true;
       this.user = {};
       //currentItinerary is array of selected items from 'search' page
       this.currentItinerary = {};
