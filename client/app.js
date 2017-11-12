@@ -21,8 +21,10 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       this.isValidUser = false;
       this.user = {};
       //currentItinerary is array of selected items from 'search' page
-      this.currentItinerary = {};
-      this.currentItinerary.items = [];
+      this.currentItinerary = {
+        items: [],
+        itineraryName: 'Name Me Please'
+      };
       //this.allItineraries is all user itinerary names and Ids
       
 
@@ -358,6 +360,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
               ctrl.displayName = userCookie.displayName;
               ctrl.user = userCookie;
               ctrl.allItineraries = userExists.data.allItineraries;
+              ctrl.selectedItinerary = '' + ctrl.allItineraries[0].id;
               console.log('logged in ', ctrl.user);
             } else {
               console.log('user doesn\'t exist on server');
@@ -460,7 +463,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             <md-content layout="row" layout-align="space-around center">
               <div ng-if="$ctrl.currentNavItem === 'search'">
                 <md-button ng-click="$ctrl.saveUserItinerary()">Save</md-button>
-                <md-button ng-click="$ctrl.currentItinerary={items:[]}">Reset</md-button> 
+                <md-button ng-click="$ctrl.currentItinerary={items:[], itineraryName: 'Name Me Please'}">Reset</md-button> 
               </div>
               <div ng-if="$ctrl.currentNavItem === 'itinerary'">
                 <md-button>Share</md-button>
