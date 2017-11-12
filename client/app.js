@@ -315,13 +315,13 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
         console.log(this.selectedItinerary);
         $http({
           method: 'GET',
-          url: '/itineraries',
+          url: '/itinerary',
           params: {id: ctrl.selectedItinerary}
         })
           .then(function(response) {
             console.log('got', ctrl.user, ' itinerary', response);
             //set currentItinerary object to the one from the server
-            // ctrl.currentItinerary = response.data; // would be dope af if this 'just works'
+            ctrl.currentItinerary = response.data[0]; // would be dope af if this 'just works'
           }, function(error) {
             console.log('error posting user itin', error);
           });

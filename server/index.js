@@ -88,6 +88,7 @@ app.post('/search', function(req, res) {
 app.get('/itinerary', (req, res) => {
   var eventids = req.query;
   currentId = eventids.id;
+  console.log('server itin ', currentId);
   db.getItinerary(currentId, function(events) {
     res.send(events);
   });

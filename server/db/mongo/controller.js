@@ -69,7 +69,7 @@ var saveItinerary = function(passI) {
   var newI = new Itinerary;
   newI.itineraryName = passI.itineraryName;
   newI.firebaseId = passI.firebaseId;
-  newI.listId = passI.listId;
+  newI.listid = passI.listid;
   passI.items.forEach(function(item){
     delete item['$']
     delete item['$$hashKey']
@@ -128,6 +128,7 @@ var getItinArray = function(itinarr, cb) {
 };
 
 var getItinerary = function(listid, cb) {
+  console.log('getting itinerary ', listid);
   Itinerary.find({listid: listid}, (err, itinobj) => {
     if (err) {
       return console.log(err)
