@@ -1,12 +1,23 @@
 angular.module('whatsGood')
   .component('itinerary', {
     bindings: {
+      isValidUser: '<',
+      getAllUserItineraries: '&',
+      currentItinerary: '<',
+      allItineraries: '<'
     },
     controller: function() {
       //remove after bindings so not overwritten
       this.itinerary = {};
       this.itinerary.imagePath = 'https://images.fineartamerica.com/images/artworkimages/mediumlarge/1/santa-monica-pier-kinga-szymczyk.jpg';
       this.itinerary.itineraryName = 'SM Trip with the boys';
+
+      this.$onInit = () => {
+        if (this.isValidUser) {
+          this.getAllUserItineraries();
+        }
+      };
+
     },
     template: `
       <div layout="row">
