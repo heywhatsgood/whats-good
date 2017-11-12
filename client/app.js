@@ -321,6 +321,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           .then(function(response) {
             console.log('got', ctrl.user, ' itinerary', response);
             //set currentItinerary object to the one from the server
+            // ctrl.currentItinerary = response.data; // would be dope af if this 'just works'
           }, function(error) {
             console.log('error posting user itin', error);
           });
