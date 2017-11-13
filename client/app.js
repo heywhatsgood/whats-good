@@ -131,7 +131,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                     //userData = {user, wasCreated}
                     console.log('server confirmed login', userData);
                     lCtrl.answer(userData.data);
-                    lCtrl.showProgress = false;                    
+                    lCtrl.showProgress = false;
                   }, function(err) {
                     console.log('user auth on localhost failed', err);
                   });
@@ -245,6 +245,11 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             ctrl.user = user;
             ctrl.displayName = user.displayName;
             ctrl.isValidUser = true;
+<<<<<<< HEAD
+=======
+            ctrl.allItineraries = user.allItineraries;
+            ctrl.selectedItinerary = '' + ctrl.allItineraries[0].id;
+>>>>>>> added itincard init
           }, function () {
             console.log('canceled');
           });
