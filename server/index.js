@@ -113,6 +113,7 @@ app.post('/itinerary', function(req, res) {
   });
 });
 
+
 app.get('/itineraries', function(req, res) {
   const currentUser = req.query;
   // console.log(currentUser);
@@ -122,4 +123,8 @@ app.get('/itineraries', function(req, res) {
   });
 });
 
-app.listen(3000, ()=> console.log('Listening on port 3000'));
+var PORT = 3000
+
+// var PORT = process.env.PORT || 3000
+
+app.listen(PORT, ()=> console.log('Listening on port ', PORT));
