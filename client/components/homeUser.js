@@ -1,7 +1,8 @@
 angular.module('whatsGood')
   .component('homeUser', {
     bindings: {
-      topRated: '<'
+      topRated: '<',
+      homeCity: '<',
     },
     controller: function () {
       this.$onInit = () => {
@@ -12,50 +13,40 @@ angular.module('whatsGood')
    
       
     <div flex layout ="column" layout-margin layout-padding >
-      <div layout-gt-md="column" layout="row" layout-align="start end">
-      LOCATION HERE
-      </div>  
-        <div layout="row" layout-md="column">
-          <div layout="column" layout-md="row" layout-margin layout-align="end center" style="max-height:75%;">
-            <h1 class="md-title"> Username:BLUEBLE </h1>
-            <p>SomeDesc:Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vehicula, lectus vel tincidunt auctor, orci nisl fringilla sem, sed ultricies massa nibh non sapien. Maecenas pulvinar ex quis tellus mollis, eu imperdiet nisi consequat. Proin rutrum felis vel elit volutpat, id aliquam enim cursus. Morbi vitae erat et nisl tincidunt scelerisque. </p>
-          </div>
+      <div layout="row" flex layout-align="space-between center">
+        <div layout="row">
+          <h1>TRENDING</h1>
         </div>
-        <md-divider></md-divider>
+        <div layout="row">
+          <h1>Home: {{$ctrl.homeCity}}</h1>
+        </div>
+      </div>  
+      <md-divider></md-divider>
       <div layout="column" layout-align="start center ">
-        <h1>TRENDING</h1>
-      </div>
-        <div layout-gt-md="row" layout="column" layout-align="center none" >
-            <md-card flex flex-gt-md="20" >
+        <div layout-gt-sm="row" layout="column" layout-align="center none" >
+          <md-card flex flex-gt-sm="20" style="height:55vh;" ng-repeat="topCard in $ctrl.topRated | limitTo:5">
             <md-card-content flex>
-            <md-card-title>
-            <md-card-title-text>
-                <span class="md-headline">{{$ctrl.topRated[0].name}}</span>
-            </md-card-title-text>
-        </md-card-title>
-            <img ng-src="{{$ctrl.topRated[0].image_url}}" class="md-card-image" style="height:300px; width:335px; overflow:hidden"/>
+              <h1 style="min-height:10vh; text-align:center; padding:0 10px" md-truncate flex layout-align="center center">{{topCard.name}}</h1>
+            <img ng-src="{{topCard.image_url}}" class="md-card-image" style="max-height:20vh; height:auto; width:100%; overflow:hidden"/>
+            <span flex></span>            
             <md-list-item class="md-3-line">
-            
               <div class="md-list-item-text" layout="column">
               
-                <h1>Rating: {{$ctrl.topRated[0].rating}}<br>
-                Pricing: {{$ctrl.topRated[0].price}}</h2>
+                <h3 style="font-size:1.3em; font-weight:bold;padding:15px 0 0 0">Rating: {{topCard.rating}}<br>
+                Pricing: {{topCard.price}}</h3>
                 <h3>
-                  {{$ctrl.topRated[0].location.display_address[0]}},</br>
-                  {{$ctrl.topRated[0].location.display_address[1]}}
+                  {{topCard.location.display_address[0]}},</br>
+                  {{topCard.location.display_address[1]}}
                 </h3>
-                <h3>Contact: {{$ctrl.topRated[0].phone}}</h3>
+                <h3>Contact: {{topCard.phone}}</h3>
               </div>
             </md-list-item>
           </md-card-content>
               <span flex></span>
-              <md-card-actions layout="row" layout-align="end center">
-                <md-button>Action 1</md-button>
-                <md-button>Action 2</md-button>
-              </md-card-actions>
             </md-card>
-
-            <md-card flex flex-gt-md="20" >
+            
+<!--
+            <md-card flex flex-gt-sm="20" style="max-height:60vh;">
             <md-card-content flex>
             <md-card-title>
             <md-card-title-text>
@@ -63,7 +54,7 @@ angular.module('whatsGood')
             </md-card-title-text>
         </md-card-title>
 
-            <img ng-src="{{$ctrl.topRated[1].image_url}}" class="md-card-image" style="height:300px; width:335px; overflow:hidden"/>
+            <img ng-src="{{$ctrl.topRated[1].image_url}}" class="md-card-image" style="max-height:15vh; height:auto; width:100%; overflow:hidden"/>
             <md-list-item class="md-3-line">
             
               <div class="md-list-item-text" layout="column">
@@ -85,14 +76,14 @@ angular.module('whatsGood')
               </md-card-actions>
             </md-card>
 
-            <md-card flex flex-gt-md="20" >
+            <md-card flex flex-gt-sm="20" style="max-height:60vh;">
             <md-card-content flex>
             <md-card-title>
             <md-card-title-text>
                 <span class="md-headline">{{$ctrl.topRated[2].name}}</span>
             </md-card-title-text>
         </md-card-title>
-            <img ng-src="{{$ctrl.topRated[2].image_url}}" class="md-card-image" style="height:300px; width:335px; overflow:hidden"/>
+            <img ng-src="{{$ctrl.topRated[2].image_url}}" class="md-card-image" style="max-height:15vh; height:auto; width:100%; overflow:hidden"/>
             <md-list-item class="md-3-line">
             
               <div class="md-list-item-text" layout="column">
@@ -114,14 +105,14 @@ angular.module('whatsGood')
               </md-card-actions>
             </md-card>
 
-            <md-card flex flex-gt-md="20" >
+            <md-card flex flex-gt-sm="20" style="max-height:60vh;">
             <md-card-content flex>
             <md-card-title>
             <md-card-title-text>
                 <span class="md-headline">{{$ctrl.topRated[3].name}}</span>
             </md-card-title-text>
         </md-card-title>
-            <img ng-src="{{$ctrl.topRated[3].image_url}}" class="md-card-image" style="height:300px; width:335px; overflow:hidden"/>
+            <img ng-src="{{$ctrl.topRated[3].image_url}}" class="md-card-image" style="max-height:15vh; height:auto; width:100%; overflow:hidden"/>
             <md-list-item class="md-3-line">
             
               <div class="md-list-item-text" layout="column">
@@ -143,14 +134,14 @@ angular.module('whatsGood')
               </md-card-actions>
             </md-card>
 
-            <md-card flex flex-gt-md="20" >
+            <md-card flex flex-gt-sm="20" style="max-height:60vh;">
             <md-card-content flex>
             <md-card-title>
             <md-card-title-text>
                 <span class="md-headline">{{$ctrl.topRated[4].name}}</span>
             </md-card-title-text>
         </md-card-title>
-            <img ng-src="{{$ctrl.topRated[4].image_url}}" class="md-card-image" style="height:300px; width:335px; overflow:hidden"/>
+            <img ng-src="{{$ctrl.topRated[4].image_url}}" class="md-card-image" style="max-height:15vh; height:auto; width:100%; overflow:hidden"/>
             <md-list-item class="md-3-line">
             
               <div class="md-list-item-text" layout="column">
@@ -180,5 +171,6 @@ angular.module('whatsGood')
 
 
       </div>
+      -->
 `
   });

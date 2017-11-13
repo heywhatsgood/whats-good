@@ -3,9 +3,6 @@ angular.module('whatsGood')
     bindings: {
       handleItinerarySearch: '&',
       handleSearchItemClick: '&',
-      // location: '<',
-      // keyword: '<',
-      // userState: '<'
       eventResults: '<',
       foodResults: '<'
     },
@@ -31,40 +28,9 @@ angular.module('whatsGood')
       this.eventResults = [];
       this.foodResults = [];
 
-      // Search routing
-      // this.getSearch = () => {
-      //   console.log(
-      //     form.location,
-      //     form.keyword,
-      //     form.userState
-      //   );
-      //   $http({
-      //     method: 'POST',
-      //     url: '/search',
-      //     data: {
-      //       location: form.location,
-      //       search: form.keyword,
-      //       type: form.userState,
-      //     }
-      //   }).then((result) => {
-      //     if (form.userState === 'Food'){
-      //       form.foodResults = result.data.businesses
-      //       console.log(form.foodResults)
-      //     }
-      //     if (form.userState === 'Event'){
-      //       form.eventResults = result.data
-      //       console.log(form.eventResults)
-      //     }
-      //   })
-      // }
-
-
-        //Post to /search function to get api call
     },
     template: `
       <div>
-
-        <!-- Testing Material Angular JS -->
 
         <div class="md-padding" ng-cloak layout="column"  layout-align="space-around center">
         
@@ -104,12 +70,10 @@ angular.module('whatsGood')
                     userState: $ctrl.userState
                   }})" style="margin-top: -10px">wass good?</md-button> 
                 </md-input-container>
-
               </div>
             </md-card-content>
           </md-card>
 
-        <!-- End testing =============== -->
       </div>
 
       <div ng-if="$ctrl.userState === 'Event'">
@@ -129,7 +93,7 @@ angular.module('whatsGood')
       <div ng-if="$ctrl.userState === 'Food'">
       <md-content>
       <md-list flex>
-        <md-list-item class="md-3-line" ng-repeat="item in $ctrl.foodResults" ng-click="$ctrl.handleSearchItemClick({item: item})">
+        <md-list-item class="md-3-line" ng-repeat="item in $ctrl.foodResults" ng-click="$ctrl.handleSearchItemClick({item: item, searchType: searchType})">
           <img ng-src="{{item.image_url}}" class="md-avatar"/>
           <div class="md-list-item-text" layout="column">
             <h3>{{item.name}}</h3>
