@@ -22,7 +22,7 @@ angular.module('whatsGood')
     
       <div layout-gt-sm="row" layout-align= "center center" flex >
         <md-card flex flex-gt-md="30">
-          <img ng-src="http://www.minico.com/blog/wp-content/uploads/2015/04/ThinkstockPhotos-460880491.jpg" class="md-card-image" alt="Washed Out" >
+          <img ng-src="./images/truncmap.jpg" class="md-card-image" alt="Washed Out" >
           <md-card-content>
             <h2 class="md-title">SEARCH</h2>
             <p>
@@ -31,11 +31,31 @@ angular.module('whatsGood')
           </md-card-content>
           <span flex></span>
         </md-card>
+
+        <md-card flex flex-gt-md="30">
+        <img ng-src="./images/turncchecklist.jpg" class="md-card-image" alt="Washed Out" >
+        <md-card-content>
+          <h2 class="md-title">ADD TO ITINERARY</h2>
+          <p>
+          Pellentesque at cursus libero. In pretium leo eget felis accumsan laoreet venenatis in erat. Nullam cursus leo eu tempor rhoncus. Nam sit amet lobortis felis. Etiam iaculis non augue et consequat. Sed tempus arcu nec faucibus ullamcorper. Curabitur odio libero, pulvinar eu mauris sed, porttitor commodo lacus. Maecenas magna nisi, malesuada vitae tristique in, vehicula vel dui. Praesent sit amet suscipit ligula, nec convallis est.
+          </p>
+        </md-card-content>
+        <span flex></span>
+      </md-card>
+
+      <md-card flex flex-gt-md="30">
+      <img ng-src="./images/share.jpg" class="md-card-image" alt="Washed Out" >
+      <md-card-content>
+        <h2 class="md-title">SHARE</h2>
+        <p>
+        Pellentesque at cursus libero. In pretium leo eget felis accumsan laoreet venenatis in erat. Nullam cursus leo eu tempor rhoncus. Nam sit amet lobortis felis. Etiam iaculis non augue et consequat. Sed tempus arcu nec faucibus ullamcorper. Curabitur odio libero, pulvinar eu mauris sed, porttitor commodo lacus. Maecenas magna nisi, malesuada vitae tristique in, vehicula vel dui. Praesent sit amet suscipit ligula, nec convallis est.
+        </p>
+      </md-card-content>
+      <span flex></span>
+    </md-card>
         
-        <md-card flex flex-gt-md="30" layout-align= "center center">
-          <div >
-            <img ng-src="https://www.50statesstaffing.com/sites/default/files/styles/large/public/field/image/travel-nursing-requirements.jpg?itok=l6taSjKW" style="width: 80%;" >
-          </div>
+       <!-- <md-card flex flex-gt-md="30">
+            <img ng-src="./images/turncchecklist.jpg" class="md-card-image" >
           <md-card-content>
             <h2 class="md-title">ADD TO ITINERARY</h2>
             <p>
@@ -47,7 +67,7 @@ angular.module('whatsGood')
       
         <md-card flex flex-gt-md="30">
           <div >
-            <img ng-src="https://www.deliveringinnovation.com/images/ShareMail_2.gif" style="width: 80%;">
+            <img ng-src="https://www.deliveringinnovation.com/images/ShareMail_2.gif" class="md-card-image" style="width: 80%;">
           </div>
           <md-card-content>
             <h2 class="md-title">SHARE</h2>
@@ -57,7 +77,7 @@ angular.module('whatsGood')
             <span flex></span>
           </md-card-content>
           
-        </md-card>
+        </md-card>-->
       </div>
     
     </div>
