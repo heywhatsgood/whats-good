@@ -18,7 +18,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       const ctrl = this;
 
       this.currentNavItem = 'home';
-      this.isValidUser = true;
+      this.isValidUser = false;
       this.user = {};
       //currentItinerary is array of selected items from 'search' page
       this.currentItinerary = {
@@ -29,6 +29,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       
       // this.topRated=[];
       this.currentItem = {};
+      this.homeCity = 'Century City';
 
       //collapse this
       this.openLoginDialog = (event, loginType) => {
@@ -276,6 +277,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           .then(function(response) {
             console.log('got', ctrl.user, ' itinerary', response);
             ctrl.allItineraries = response.data;
+            ctrl.selectedItinerary = '' + ctrl.allItineraries[0].id;
           }, function(error) {
             console.log('error posting user itin', error);
           });
@@ -291,7 +293,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       };
 
       this.handleItinerarySearch = ({form}) => {
-        console.log('made it', form)
+        console.log('made it', form);
         console.log(
           form.location,
           form.keyword,
@@ -317,9 +319,9 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
         })
       };
 
-      this.handleItineraryItemClick= (selected) => {
+      this.handleItineraryItemClick = (selected) => {
         console.log('clicked at itinerary', selected)
-        this.currentItem = selected
+        this.currentItem = selected;
         console.log('clicked, after selected', this.currentItem)
       }
 
@@ -335,6 +337,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             console.log('got', ctrl.user, ' itinerary', response);
             //set currentItinerary object to the one from the server
             ctrl.currentItinerary = response.data[0]; // would be dope af if this 'just works'
+            ctrl.currentItem = ctrl.currentItinerary.items[0];
           }, function(error) {
             console.log('error posting user itin', error);
           });
@@ -347,7 +350,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           url: '/search',
           data: {
             location: {
-              city: 'santa monica'
+              city: ctrl.homeCity
             },
             search: 'restaurants',
             type: 'Food',
@@ -398,6 +401,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
               ctrl.user = userCookie;
               ctrl.allItineraries = userExists.data.allItineraries;
               ctrl.selectedItinerary = '' + ctrl.allItineraries[0].id;
+              ctrl.handleItineraryChange();
               console.log('logged in ', ctrl.user);
             } else {
               console.log('user doesn\'t exist on server');
@@ -523,6 +527,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                 <!-- Home for valid user-->
                 <home-user 
                 top-rated="$ctrl.topRated"
+                home-city="$ctrl.homeCity"
                 />
 
               </md-content>
