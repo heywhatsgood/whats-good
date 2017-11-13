@@ -113,6 +113,7 @@ app.post('/itinerary', function(req, res) {
   });
 });
 
+
 app.get('/itineraries', function(req, res) {
   const currentUser = req.query;
   // console.log(currentUser);
