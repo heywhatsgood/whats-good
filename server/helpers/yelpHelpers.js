@@ -1,4 +1,4 @@
-const yelpApi = require('./config.js');
+// const yelpApi = require('./config.js');
 const request = require('request-promise');
 // const eventfulKey = require('./config.js');
 const apiKey = process.env.yelpApiKey || eventfulKey.yelpApiKey 
