@@ -76,7 +76,6 @@ angular.module('whatsGood')
             />
          
             </section>
-          <section flex ></section>
         </div>
       </div>
 `

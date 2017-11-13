@@ -1,10 +1,12 @@
 const Sequelize = require('sequelize');
-const postgresUrl = 'postgres://ojgiieyj:B_Umu3eifqfsPAiNNzUNkT_eXDpIHXG5@baasu.db.elephantsql.com:5432/ojgiieyj';
+const config = require('../../helpers/config.js');
+const postgresUrl = 'postgres://ojgiieyj:4XVcqnHmI6yJ24gisa07hIOL2XU_x6cw@baasu.db.elephantsql.com:5432/ojgiieyj';
+
 
 const db = new Sequelize(postgresUrl, {
   dialect: 'postgres',
   operatorsAliases: false,
-  logging: false
+  logging: false,
 });
 
 db

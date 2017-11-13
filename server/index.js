@@ -64,14 +64,14 @@ app.post('/search', function(req, res) {
   if (data.type === 'Food') {
 
     yelp(data.location, data.search, function(food) {
-      console.log(food);
+      // console.log(food);
       res.send(food);	
     });
   }
   
   if (data.type === 'Event') {
     eventful.getEvents(data.location, data.search, function(events) {
-      console.log('get events ', events);
+      // console.log('get events ', events);
       res.send(events);
     });
   }
