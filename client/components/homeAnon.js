@@ -9,7 +9,7 @@ angular.module('whatsGood')
     
       <div flex layout ="column" layout-align= "center center" layout-margin layout-padding >
       
-        <h1 class="md-title">WELCOME</h1> 
+        <h1 class="md-display-2" style="font-weight:bold; font-size:3em;">WELCOME</h1> 
       
       <div layout-margin layout-padding flex >
       <p>Integer neque leo, faucibus vitae eros at, mollis placerat libero. Vivamus iaculis diam velit, at egestas lorem sodales ac. Maecenas sit amet pharetra purus. Aenean in tortor ultrices, placerat augue vitae, faucibus nisl. Suspendisse potenti. Phasellus porttitor pretium nisl non rhoncus. In sit amet leo semper dolor hendrerit condimentum sit amet id diam. Praesent et nisl eget diam placerat dignissim. Praesent a felis diam. Ut euismod, dolor vitae tempor faucibus, enim purus fermentum nibh, in elementum dolor erat vel felis. In in maximus dui, ac molestie dolor. Nullam dapibus leo eu elementum vehicula. Vivamus ultricies dui vitae commodo sollicitudin.</p>
