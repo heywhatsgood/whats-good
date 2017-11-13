@@ -131,7 +131,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                     //userData = {user, wasCreated}
                     console.log('server confirmed login', userData);
                     lCtrl.answer(userData.data);
-                    lCtrl.showProgress = false;
+                    lCtrl.showProgress = false;                    
                   }, function(err) {
                     console.log('user auth on localhost failed', err);
                   });
@@ -162,6 +162,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
               displayName: userData.displayName,
               firebaseId: userData.firebaseId,
             };
+            ctrl.allItineraries = userData.allItineraries;
             $cookies.putObject('myWhatsGoodUser', user);
             $mdDialog.hide(userData);
           };
@@ -244,8 +245,6 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             ctrl.user = user;
             ctrl.displayName = user.displayName;
             ctrl.isValidUser = true;
-            ctrl.allItineraries = user.allItineraries;
-            ctrl.selectedItinerary = '' + ctrl.allItineraries[0].id;
           }, function () {
             console.log('canceled');
           });
@@ -335,9 +334,9 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           params: {id: ctrl.selectedItinerary}
         })
           .then(function(response) {
-            console.log('got', ctrl.user, ' itinerary', response);
             //set currentItinerary object to the one from the server
-            ctrl.currentItinerary = response.data[0]; // would be dope af if this 'just works'
+            ctrl.currentItinerary = response.data; // would be dope af if this 'just works'
+            console.log(ctrl.currentItinerary, response.data);
             ctrl.currentItem = ctrl.currentItinerary.items[0];
           }, function(error) {
             console.log('error posting user itin', error);
