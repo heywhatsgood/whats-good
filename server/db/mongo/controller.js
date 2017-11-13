@@ -1,9 +1,9 @@
 var mongoose = require('mongoose');
 // var db = mongoose.connect('mongodb://localhost/eventlist', {useMongoClient: true});
-var keys = require('../../helpers/config.js');
-var mlabKey = keys.mlabsKey;
-// var mlabKey = process.env.mlabsKey 
-
+// var keys = require('../../helpers/config.js');
+console.log(keys)
+var mlabKey = process.env.mlabsKey || keys.mlabsKey;
+// Use below for Mlabs address
 var db = mongoose.connect(mlabKey,{useMongoClient:true}) 
 
 mongoose.Promise = global.Promise;
@@ -66,6 +66,7 @@ var saveEvent = function(passE) {
 };
 
 var saveItinerary = function(passI) {
+  console.log('passI list id is, ', passI.listId)
 
   var newI = new Itinerary;
   newI.itineraryName = passI.itineraryName;
