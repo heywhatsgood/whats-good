@@ -1,7 +1,8 @@
 var mongoose = require('mongoose');
 // var db = mongoose.connect('mongodb://localhost/eventlist', {useMongoClient: true});
-var keys = require('../../helpers/config.js');
-var mlabKey = keys.mlabsKey;
+// var keys = require('../../helpers/config.js');
+console.log(keys)
+var mlabKey = process.env.mlabsKey || keys.mlabsKey;
 // Use below for Mlabs address
 var db = mongoose.connect(mlabKey,{useMongoClient:true}) 
 
@@ -65,11 +66,13 @@ var saveEvent = function(passE) {
 };
 
 var saveItinerary = function(passI) {
+  console.log('passI list id is, ', passI.listId)
 
   var newI = new Itinerary;
   newI.itineraryName = passI.itineraryName;
   newI.firebaseId = passI.firebaseId;
   newI.listid = passI.listid;
+  console.log('newI.listid, ', newI.listid)
   passI.items.forEach(function(item){
     delete item['$']
     delete item['$$hashKey']
@@ -128,10 +131,10 @@ var getItinArray = function(itinarr, cb) {
 };
 
 var getItinerary = function(listid, cb) {
-  console.log('getting itinerary ', listid);
-  Itinerary.find({listid: listid}, (err, itinobj) => {
-    if (err) {
-      return console.log(err)
+  console.log('calling on getItinerary, list id is: ', listid);
+
+  Itinerary.findOne({ listid: listid }, function (err, itinobj) {
+    if (err) {console.log('the error is, ', err)
     } else {
       cb(itinobj)
     }
