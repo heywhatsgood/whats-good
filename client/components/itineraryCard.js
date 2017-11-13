@@ -16,12 +16,12 @@ angular.module('whatsGood')
       <md-grid-list md-cols-md="4" md-cols-gt-md="6" md-row-height-gt-md="3:2" md-row-height="3:2" md-gutter="8px" md-gutter-gt-md="12px">
         
         <md-grid-tile md-rowspan-gt-md="3" md-colspan-gt-md="2" md-rowspan="4" md-colspan="4">
-        <img ng-src='https://www.teachingenglish.org.uk/sites/teacheng/files/styles/large/public/images/iStock_000003834748Small_3.jpg?itok=PS_ZZzos' layout-fill/>
+       
         <div ng-if="$ctrl.currentItem.type==='Food'">
-          <img ng-src="$ctrl.currentItem.image[0].url" onerror="this.src='https://www.teachingenglish.org.uk/sites/teacheng/files/styles/large/public/images/iStock_000003834748Small_3.jpg?itok=PS_ZZzos'"layout-fill/>
+          <img ng-src="{{$ctrl.currentItem.image[0].url[0]}}"  layout-fill/>
         </div>
         <div ng-if="$ctrl.currentItem.name">
-        <img ng-src="$ctrl.currentItem.image_url" onerror="this.src='https://www.teachingenglish.org.uk/sites/teacheng/files/styles/large/public/images/iStock_000003834748Small_3.jpg?itok=PS_ZZzos'"layout-fill/>
+        <img ng-src="{{$ctrl.currentItem.image_url}}" layout-fill/>
         </div>
           </md-grid-tile>
       
