@@ -4,7 +4,9 @@ angular.module('whatsGood')
       isValidUser: '<',
       getAllUserItineraries: '&',
       currentItinerary: '<',
-      allItineraries: '<'
+      allItineraries: '<',
+      handleItineraryItemClick: '&',
+      currentItem: '<'
     },
     controller: function() {
       //remove after bindings so not overwritten
@@ -21,8 +23,8 @@ angular.module('whatsGood')
     },
     template: `
       <div layout="row">
-        <div flex="35" layout="column" class="boxWithHeight" layout-padding>
-          <!-- itinerary list -->
+       <!-- <div flex="35" layout="column" class="boxWithHeight" layout-padding>
+          
           <section flex="80">
             <md-content class="md-padding" layout-xs="column" layout="row">
               <div flex-xs flex-gt-xs="95" layout="column">
@@ -61,13 +63,17 @@ angular.module('whatsGood')
           </section>
 
           <section flex></section>
-        </div>
+        </div> -->
 
         <div flex layout="column" class="boxWithHeight" layout-padding>
 
           <section flex>
             
-            <itinerary-card/>
+            <itinerary-card 
+            current-itinerary="$ctrl.currentItinerary"
+            handle-itinerary-item-click= "$ctrl.handleItineraryItemClick"
+            current-item="$ctrl.currentItem"
+            />
          
             </section>
           <section flex ></section>

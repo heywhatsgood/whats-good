@@ -115,7 +115,7 @@ angular.module('whatsGood')
       <div ng-if="$ctrl.userState === 'Event'">
         <md-content>
         <md-list flex>
-          <md-list-item class="md-3-line" ng-repeat="item in $ctrl.eventResults" ng-click="$ctrl.handleSearchItemClick({item: item})">
+          <md-list-item class="md-3-line" ng-repeat="item in $ctrl.eventResults" ng-click="$ctrl.handleSearchItemClick({item: item, searchType: searchType})">
             <img ng-src="{{item.image[0].url[0]}}" onerror="this.src='https://www.blog.google/static/blog/images/google-200x200.7714256da16f.png'" class="md-avatar"/>
             <div class="md-list-item-text" layout="column">
               <h3>{{ item.title[0] }}</h3>

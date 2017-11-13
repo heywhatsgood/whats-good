@@ -18,7 +18,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       const ctrl = this;
 
       this.currentNavItem = 'home';
-      this.isValidUser = false;
+      this.isValidUser = true;
       this.user = {};
       //currentItinerary is array of selected items from 'search' page
       this.currentItinerary = {
@@ -27,6 +27,8 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       };
       //this.allItineraries is all user itinerary names and Ids
       
+      // this.topRated=[];
+      this.currentItem = {};
 
       //collapse this
       this.openLoginDialog = (event, loginType) => {
@@ -279,8 +281,12 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           });
       };
 
-      this.handleSearchItemClick = ({item}) => {
+      this.handleSearchItemClick = ({item, searchType}) => {
         console.log('clicked', item);
+        delete item.type;
+        var clickedItem={};
+        Object.assign(clickedItem, item);
+        clickedItem.itemType = searchType;
         ctrl.currentItinerary.items.push(item);
       };
 
@@ -311,6 +317,13 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
         })
       };
 
+      this.handleItineraryItemClick= (selected) => {
+        console.log('clicked at itinerary', selected)
+        this.currentItem = selected
+        console.log('clicked, after selected', this.currentItem)
+      }
+
+
       this.handleItineraryChange = () => {
         console.log(this.selectedItinerary);
         $http({
@@ -327,6 +340,28 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
           });
       };
 
+
+      this.topRatedRestaurants = () => {
+        $http({
+          method: 'POST',
+          url: '/search',
+          data: {
+            location: {
+              city: 'santa monica'
+            },
+            search: 'restaurants',
+            type: 'Food',
+          }
+        }).then((result)=>{
+          ctrl.topRated = result.data.businesses;
+          console.log('at top rated restaurants', ctrl.topRated)
+          
+        }, (err)=>{
+          console.log('toprated restaurants', err)
+        })
+
+      }
+
       this.logout = () => {
         this.isValidUser = false;
         this.user = {};
@@ -336,6 +371,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
 
       this.$onInit = () => {
         //init firebase server
+        ctrl.topRatedRestaurants();
         var config = {
           apiKey: 'AIzaSyDG1EUoj_7D2F7gUCqEdnu8TsxX4FNXOJw',
           authDomain: 'whats-good-21ec5.firebaseapp.com',
@@ -449,11 +485,11 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                 <div ng-repeat="item in $ctrl.currentItinerary.items">
                 <!-- ng-if item.type = event -->
                   <div ng-if="item.type='Event'">
-                    <h4>{{item.title[0]}}</h4>
+                    <h4 ng-click="$ctrl.handleItineraryItemClick(item)">{{item.title[0]}}</h4>
                     <h5>{{item.city_name[0]}}</h5>
                   </div>
                   <div ng-if="item.type='Food'">
-                    <h4>{{item.name}}</h4>
+                    <h4 ng-click="$ctrl.handleItineraryItemClick(item)" >{{item.name}}</h4>
                     <p>{{item.location.address1}} {{item.location.zip_code}}</p>
                   </div>
                   <md-divider ng-if="!$last"></md-divider>
@@ -485,7 +521,9 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
             <div ng-if="$ctrl.currentNavItem === 'home' && $ctrl.isValidUser === true">
               <md-content layout="column" flex>
                 <!-- Home for valid user-->
-                <home-user />
+                <home-user 
+                top-rated="$ctrl.topRated"
+                />
 
               </md-content>
             </div>
@@ -496,7 +534,7 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                   handle-itinerary-search="$ctrl.handleItinerarySearch({form: form})"
                   event-results= "$ctrl.eventResults"
                   food-results= "$ctrl.foodResults"
-                  handle-search-item-click="$ctrl.handleSearchItemClick({item: item})"
+                  handle-search-item-click="$ctrl.handleSearchItemClick({item: item, searchType: searchType})"
                 ></itinerary-search>
 
               </md-content>
@@ -509,6 +547,8 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
                   get-all-user-itineraries = "$ctrl.getAllUserItineraries()"
                   current-itinerary = "$ctrl.currentItinerary"
                   all-itineraries = "$ctrl.allItineraries"
+                  handle-itinerary-item-click= "$ctrl.handleItineraryItemClick"
+                  current-item="$ctrl.currentItem"
                 />
 
               </md-content>
