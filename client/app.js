@@ -27,11 +27,8 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
       };
       //this.allItineraries is all user itinerary names and Ids
       
-<<<<<<< HEAD
-      this.topRated=[];
-=======
+      // this.topRated=[];
       this.currentItem = {};
->>>>>>> bindings
 
       //collapse this
       this.openLoginDialog = (event, loginType) => {
@@ -487,11 +484,11 @@ angular.module('whatsGood', ['ngMaterial', 'firebase', 'ngCookies'])
               <div>
                 <div ng-repeat="item in $ctrl.currentItinerary.items">
                 <!-- ng-if item.type = event -->
-                  <div ng-if="item.type==='Event'">
+                  <div ng-if="item.type='Event'">
                     <h4 ng-click="$ctrl.handleItineraryItemClick(item)">{{item.title[0]}}</h4>
                     <h5>{{item.city_name[0]}}</h5>
                   </div>
-                  <div ng-if="item.type==='Food'">
+                  <div ng-if="item.type='Food'">
                     <h4 ng-click="$ctrl.handleItineraryItemClick(item)" >{{item.name}}</h4>
                     <p>{{item.location.address1}} {{item.location.zip_code}}</p>
                   </div>
