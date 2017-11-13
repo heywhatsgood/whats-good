@@ -123,6 +123,8 @@ app.get('/itineraries', function(req, res) {
   });
 });
 
-var PORT = process.env.PORT ||3000
+var PORT = 3000
+
+// var PORT = process.env.PORT || 3000
 
 app.listen(PORT, ()=> console.log('Listening on port ', PORT));
