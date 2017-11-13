@@ -1,6 +1,7 @@
 const request = require('request-promise');
-const eventfulKey = require('./config.js');
-const apiKey = eventfulKey.eventfulApiKey;
+// const eventfulKey = require('./config.js');
+// const apiKey = eventfulKey.eventfulApiKey;
+const apiKey = process.env.eventfulApiKey;
 const parsexml = require('xml2js').parseString;
 
 //location = {city, state, date}
