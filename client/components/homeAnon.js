@@ -7,12 +7,11 @@ angular.module('whatsGood')
     template: `
     <div layout="column" flex>
     
-      <div flex layout ="column" layout-align= "center center" layout-margin layout-padding >
+      <div flex layout ="column" layout-align= "center center" layout-margin>
       
-        <h1 class="md-display-2" style="font-weight:bold; font-size:4em; font: roboto;">WELCOME</h1> 
+        <h1 class="md-display-2" style="font-weight:bold; font-size:3em; font: roboto;">WELCOME</h1> 
       
-      <div layout-margin layout-padding flex >
-      <p style="font-size:1.4em;">Spending a day out about town with friends? Well this completely sick app will save you some time by finding you the best spots to eat and hang out, and making it easy to share them!</p>
+      <p style="font-size:1em;">Spending a day out about town with friends? Well this completely sick app will save you some time by finding you the best spots to eat and hang out, and making it easy to share them!</p>
       </div>
       
       
@@ -24,9 +23,9 @@ angular.module('whatsGood')
         <md-card flex flex-gt-md="30">
           <img ng-src="./images/truncmap.jpg" class="md-card-image" alt="Washed Out" >
           <md-card-content>
-            <h2 class="md-title" style="font-weight:bold; font-size:2em;">SEARCH</h2>
+            <h2 class="md-title" style="font-weight:bold; font-size:1.5em;">SEARCH</h2>
             <p>
-            Search places and activities by keyword. Find out the top rated places to eat or most popular events in any city. 
+            Search places and activities by keyword. Our algorithm will give you the top rated places to eat or most popular events in any city. 
             </p>
           </md-card-content>
           <span flex></span>
@@ -35,9 +34,9 @@ angular.module('whatsGood')
         <md-card flex flex-gt-md="30">
         <img ng-src="./images/turncchecklist.jpg" class="md-card-image" alt="Washed Out" >
         <md-card-content>
-          <h2 class="md-title" style="font-weight:bold; font-size:2em;">ADD TO ITINERARY</h2>
+          <h2 class="md-title" style="font-weight:bold; font-size:1.5em;">ADD TO ITINERARY</h2>
           <p>
-          Add an event or food venue to your itinerary. Once you have your day planned, login and save.
+          See somehting you like? Add an event or food venue to your itinerary. Once you have your day planned, login and save.
           </p>
         </md-card-content>
         <span flex></span>
@@ -46,7 +45,7 @@ angular.module('whatsGood')
       <md-card flex flex-gt-md="30">
       <img ng-src="./images/share.jpg" class="md-card-image" alt="Washed Out" >
       <md-card-content>
-        <h2 class="md-title" style="font-weight:bold; font-size:2em;">SHARE</h2>
+        <h2 class="md-title" style="font-weight:bold; font-size:1.5em;">SHARE</h2>
         <p>
         What's Good makes it easy to plan and share your day with your friends and family. Just share the whole itinerary - addresses included - with no hassle.
         </p>
